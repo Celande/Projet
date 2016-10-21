@@ -1,14 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.lang.*;
 import java.io.*;
 import java.awt.event.*;
 import java.text.*;
+import javax.swing.table.*;
 
 // javac -Xlint Mediatheque.java
 
-public class Mediatheque
+public class Mediatheque implements ActionListener
 {
 	private String nom;
 
@@ -20,6 +22,9 @@ public class Mediatheque
 	private ArrayList<CategorieClient> catList;
 
 	JFrame frame;
+	JTable table;
+	JTextField searchTextField;
+	TableRowSorter<TableModel> sorter;
 
 	private void test()
 	{
@@ -86,11 +91,18 @@ public class Mediatheque
 		frame.setLayout(new BorderLayout());
 		frame.setTitle("Liste des clients");
 
+		/** Recherche **/
 		JPanel searchPanel = new JPanel(new FlowLayout());
-		JTextField searchTextField = new JTextField();
+		searchTextField = new JTextField(20);
 		JButton searchButton = new JButton("OK");
+		searchButton.setActionCommand("search");
+		searchButton.addActionListener(this);
 		searchPanel.add(searchTextField);
 		searchPanel.add(searchButton);
+
+		frame.getRootPane().setDefaultButton(searchButton);
+
+		/** Tableau **/
 
 		// Données du tableau
 		Object[][] data = new Object[clientList.size()][];
@@ -102,14 +114,60 @@ public class Mediatheque
 		// Titre des colonnes
 		String title[] = {"Catégorie", "Nom", "Prénom", "Adresse", "Inscription", "Renouvellement", "Emprunts effectués", "Emprunts dépassés", "Emprunts en cours", "Code de Réduction"};
 
-		JTable table = new JTable(data, title);
+		//table = new JTable(data, title);
+		DefaultTableModel tableModel = new DefaultTableModel(data, title);
+		table = new JTable(tableModel);
+		sorter = new TableRowSorter<TableModel>(table.getModel());
+		table.setRowSorter(sorter);
 
-		frame.getContentPane().add(new JScrollPane(table));
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>(25); // Pourquoi 25 ?
+		for(int i=0; i<title.length; i++)
+		{
+			sortKeys.add(new RowSorter.SortKey(i, SortOrder.ASCENDING));
+		}
+		sorter.setSortKeys(sortKeys);
+
+		frame.add(searchPanel, BorderLayout.NORTH);
+		frame.getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
 
 		frame.setMinimumSize(new Dimension(640,480));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		if(e.getActionCommand().equals("search"))
+		{
+			String text = searchTextField.getText();
+			if (text.trim().length() == 0) 
+			{
+				sorter.setRowFilter(null);
+			} 
+			else 
+			{
+				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, 1, 2, 3));
+			}
+		}
+	}
+
+	//@Override
+	public void keyPressed(KeyEvent e) 
+	{
+		if (e.getKeyCode()==KeyEvent.VK_ENTER)
+		{
+			String text = searchTextField.getText();
+			if (text.trim().length() == 0) 
+			{
+				sorter.setRowFilter(null);
+			} 
+			else 
+			{
+				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, 1, 2, 3));
+			}
+		}
+
 	}
 
 	public Boolean alreadyInClientList(Client c)

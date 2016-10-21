@@ -139,6 +139,7 @@ public class Client implements ActionListener
 		JButton okButton = new JButton("OK");
 		okButton.setActionCommand("ok");
 		okButton.addActionListener(this);
+		frame.getRootPane().setDefaultButton(okButton);
 
 		panel.add(p1);
 		panel.add(p2);
@@ -193,6 +194,29 @@ public class Client implements ActionListener
 			frame.setVisible(false);
 			frame.dispose();
 		}
+	}
+
+	public void keyPressed(KeyEvent e) 
+	{
+		if (e.getKeyCode()==KeyEvent.VK_ENTER)
+		{
+			this.nom = new String(nomTextField.getText());
+			this.prenom = new String(prenomTextField.getText());
+			this.adresse = new String(adresseTextField.getText());
+
+			this.categorie = CategorieClient.ETUDIANT;
+			this.categorie.setCategorie(categorieCombo.getSelectedItem().toString());
+
+			Calendar calendar = Calendar.getInstance();
+			this.dateInsription = new Date();
+			this.dateInsription = calendar.getTime();
+			this.dateRenouvellement = new Date();
+			this.dateRenouvellement = this.dateInsription;
+
+			frame.setVisible(false);
+			frame.dispose();
+		}
+
 	}
 
 	public String getNom()

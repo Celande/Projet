@@ -1,0 +1,4 @@
+git add file
+git commit
+git remote add origin url
+git push -u origin master
