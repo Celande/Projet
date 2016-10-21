@@ -7,10 +7,18 @@ import java.io.*;
 import java.awt.event.*;
 import java.text.*;
 import javax.swing.table.*;
+import java.io.File;
+import java.util.Iterator;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
 
 // javac -Xlint Mediatheque.java
+
+// javac -cp ".:./json-simple-1.1.1.jar" Mediatheque.java
+// java -cp ".:./json-simple-1.1.1.jar" Mediatheque
 
 public class Mediatheque implements ActionListener
 {
@@ -30,13 +38,19 @@ public class Mediatheque implements ActionListener
 
 	private void test()
 	{
+		/*
 		addClient("a");
 		addClient("a");
 		addClient("b");
+		*/
+		/*
 		for(Client c : clientList)
 		{
-			System.out.println(c);
+			System.out.println(c.write());
 		}
+		*/
+		//write();
+		read();
 		showClientList();
 	}
 
@@ -47,6 +61,8 @@ public class Mediatheque implements ActionListener
 
 	public Mediatheque()
 	{
+		nom = new String("Machin");
+
 		locList = new ArrayList<Localisation>();
 		genreList = new ArrayList<Genre>();
 		docList = new ArrayList<Document>();
@@ -183,5 +199,76 @@ public class Mediatheque implements ActionListener
 		}
 
 		return false;
+	}
+
+	public void write()
+	{
+		JSONObject obj = new JSONObject();
+
+		JSONArray clients = new JSONArray();
+
+		try
+		{
+			obj.put("nom", nom);
+
+			for(Client c : clientList)
+			{
+				clients.add(c.write());
+			}
+
+			obj.put("clients", clients);
+
+			/*
+			StringWriter out = new StringWriter();
+			obj.writeJSONString(out);
+			String jsonText = out.toString();
+			System.out.println(jsonText);
+			*/
+
+			/** Ecriture dans le fichier **/
+
+			FileWriter file = new FileWriter(this.nom + ".json");
+			file.write(obj.toJSONString());
+			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("\nJSON Object: " + obj);
+			file.flush();
+			file.close();
+			//System.out.println("\nJSONString Object: " + obj.toJSONString());
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+	}
+
+	public void read()
+	{
+		JSONParser parser = new JSONParser();
+
+		try {
+
+			Object obj = parser.parse(new FileReader("Machin.json"));
+
+			JSONObject jsonObject = (JSONObject) obj;
+
+			this.nom = (String) jsonObject.get("nom");
+			System.out.println(nom);
+
+			// loop array
+			clientList.clear();
+			JSONArray clients = (JSONArray) jsonObject.get("clients");
+			Iterator<String> iterator = clients.iterator();
+			while (iterator.hasNext()) 
+			{
+				//clientList.add(Client.read(iterator.next()));
+				System.out.println(iterator.next());
+			}
+
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
 	}
 };

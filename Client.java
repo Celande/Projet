@@ -6,6 +6,13 @@ import java.io.*;
 import java.awt.event.*;
 import java.text.*;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+
+//import javax.json.*;
+
 public class Client implements ActionListener
 {
 	private CategorieClient categorie;
@@ -249,5 +256,75 @@ public class Client implements ActionListener
 		Object[] tab = {categorie, nom, prenom, adresse, dateFormat.format(dateInsription), dateFormat.format(dateRenouvellement), nbEmpruntsEffectues, nbEmpruntsEffectues, nbEmpruntsEnCours, codeReduction};
 
 		return tab;
+	}
+
+	public JSONObject write()
+	{
+		JSONObject obj = new JSONObject();
+
+		try
+		{
+			obj.put("categorie", categorie.getNom());
+			obj.put("nom", nom);
+			obj.put("prenom", prenom);
+			obj.put("adresse", adresse);
+			obj.put("date_inscription", dateFormat.format(dateInsription));
+			obj.put("date_renouvellement", dateFormat.format(dateRenouvellement));
+			obj.put("nb_effectues", new Integer(nbEmpruntsEffectues));
+			obj.put("nb_depasses", new Integer(nbEmpruntsDepasses));
+			obj.put("nb_encours", new Integer(nbEmpruntsEnCours));
+			obj.put("code", new Integer(codeReduction));
+
+			StringWriter out = new StringWriter();
+			obj.writeJSONString(out);
+
+			return obj;
+
+			//String jsonText = out.toString();
+			//System.out.println(jsonText);
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		return obj;
+	}
+
+	public void read(JSONObject obj)
+	{
+		JSONParser parser = new JSONParser();
+
+		try 
+		{
+			/*
+			Object obj = parser.parse(new FileReader("c:\\test.json"));
+
+			JSONObject jsonObject = (JSONObject) obj;
+
+			String name = (String) jsonObject.get("name");
+			System.out.println(name);
+
+			long age = (Long) jsonObject.get("age");
+			System.out.println(age);
+
+			// loop array
+			JSONArray msg = (JSONArray) jsonObject.get("messages");
+			Iterator<String> iterator = msg.iterator();
+			while (iterator.hasNext()) {
+				System.out.println(iterator.next());
+				
+
+			this.nom = obj.get("nom");
+			}*/
+
+			this.nom = (String) obj.get("nom");
+
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
 	}
 };
