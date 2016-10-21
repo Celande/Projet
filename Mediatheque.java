@@ -8,6 +8,8 @@ import java.awt.event.*;
 import java.text.*;
 import javax.swing.table.*;
 
+import org.json.simple.JSONObject;
+
 // javac -Xlint Mediatheque.java
 
 public class Mediatheque implements ActionListener
