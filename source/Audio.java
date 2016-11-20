@@ -18,6 +18,9 @@ public class Audio extends Document
 		this.genre = genre;
 
 		this.classification = classification;
+
+		super.DUREE = this.DUREE;
+		super.TARIF = this.TARIF;
 	}
 
 	public Audio()
@@ -31,6 +34,9 @@ public class Audio extends Document
 		this.genre = Genre.AUTRE; // Par défaut
 
 		this.classification = "";
+
+		super.DUREE = this.DUREE;
+		super.TARIF = this.TARIF;
 	}
 
 	public String getClassification()

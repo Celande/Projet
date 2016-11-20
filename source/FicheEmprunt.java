@@ -29,19 +29,29 @@ public class FicheEmprunt
 	{
 		Calendar cal = Calendar.getInstance();
 
+		try
+		{
+		// "aujourd'hui"
 		this.dateEmprunt = new Date();
-		this.dateEmprunt = cal.getTime(); // "aujourd'hui"
+		this.dateEmprunt = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 
 		this.dateLimite = new Date();
 		cal.setTime(this.dateEmprunt);
 		cal.add(Calendar.DATE, d.DUREE); // date limite en fonction de la durée du document
-		this.dateLimite = cal.getTime();
+		this.dateLimite = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 
 		this.dateRappel = new Date();
         cal.setTime(this.dateLimite);
         cal.add(Calendar.DATE, -1); // rappel un jour avant la date limite
-		this.dateRappel = cal.getTime();
+		this.dateRappel = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 
+	}
+	catch(Exception e)
+	{
+		System.err.println(e.getMessage());
+		System.exit(-1);
+	}
+		
 		this.codeClient = c.getMatricule();
 		this.codeDoc = d.getCode();
 
@@ -120,14 +130,13 @@ public class FicheEmprunt
 
 	// Mise à jour de la fiche d'emprunt
 	// Renvoie si le dépassement date d'aujourd'hui ou non
-	public Boolean update()
+	public Boolean update(Date today)
 	{
-		Calendar cal = Calendar.getInstance();
 		Boolean justPassed = false; // Vérifie si le dépassement est le jour même ou non
 
 		if(!this.depasse) // Vérifie si il n'y a pas déjà dépassement
 		{
-			if(cal.getTime().after(dateLimite)) // Vérifie s'il y a  dépassement
+			if(today.after(dateLimite)) // Vérifie s'il y a  dépassement
 			{
 				this.depasse = true;
 				justPassed = true;
@@ -143,11 +152,10 @@ public class FicheEmprunt
 	}
 
 	// Nécessité d'envoyer un rappel
-	public Boolean giveRappel() // Verifier si c'est la date ou à la seconde pres
+	public Boolean giveRappel(Date today) // Verifier si c'est la date ou à la seconde pres
 	{
-		Calendar cal = Calendar.getInstance();
 		// Envoie un rappel chaque jour à partir de dateRappel
-		if(cal.getTime().equals(this.dateRappel) || cal.getTime().after(this.dateRappel))
+		if(today.equals(this.dateRappel) || today.after(this.dateRappel))
 		{
 			return true;
 		}
@@ -201,7 +209,7 @@ public class FicheEmprunt
 			      	else if(parser.getString().equals("dateRappel"))
 			      	{
 			      		parser.next();
-			      		this.dateEmprunt = dateFormat.parse(parser.getString());
+			      		this.dateRappel = dateFormat.parse(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("depasse"))
 			      	{

@@ -20,6 +20,9 @@ public class Video extends Document
 
 		this.dureeFilm = dureeFilm;
 		this.mentionsLegales = mentionsLegales;
+
+		super.DUREE = this.DUREE;
+		super.TARIF = this.TARIF;
 	}
 
 	public Video()
@@ -34,6 +37,9 @@ public class Video extends Document
 
 		this.dureeFilm = 0;
 		this.mentionsLegales = "";
+
+		super.DUREE = this.DUREE;
+		super.TARIF = this.TARIF;
 	}
 
 	public int getDuree()

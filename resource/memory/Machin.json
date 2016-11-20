@@ -21,10 +21,10 @@ Video :
 {"code":"v2","titre":"v2","auteur":"v2","annee":"2016","empruntable":"false","emprunte":"false","nbEmprunts":0,"dureeFilm":2,"mentionsLegales":"v2","loc":{"salle":"s2","rayon":"r3"},"genre":{"ordinal":3}}
 
 Client :
-{"categorie":{"ordinal":1,"actif":"false"},"nom":"a","prenom":"a","adresse":"a","dateInscription":"20/11/2016","dateRenouvellement":"20/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"codeReduction":0,"matricule":"PA6721"}
-{"categorie":{"ordinal":1,"actif":"false"},"nom":"b","prenom":"b","adresse":"b","dateInscription":"20/11/2016","dateRenouvellement":"20/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"codeReduction":0,"matricule":"PA8306"}
+{"categorie":{"ordinal":1,"actif":"false"},"nom":"a","prenom":"a","adresse":"a","email":"a@lol.fr","dateInscription":"20/11/2016","dateRenouvellement":"20/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"codeReduction":0,"matricule":"PA6948"}
+{"categorie":{"ordinal":1,"actif":"false"},"nom":"b","prenom":"b","adresse":"b","email":"b@lol.fr","dateInscription":"20/11/2016","dateRenouvellement":"20/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"codeReduction":0,"matricule":"PA8590"}
 
 Fiche Emprunt :
-{"dateEmprunt":"20/11/2016","dateLimite":"20/11/2016","dateRappel":"19/11/2016","depasse":"false","tarif":"0.0","codeClient":"PA6721","codeDoc":"a1"}
-{"dateEmprunt":"20/11/2016","dateLimite":"20/11/2016","dateRappel":"19/11/2016","depasse":"false","tarif":"0.0","codeClient":"PA8306","codeDoc":"v1"}
+{"dateEmprunt":"20/11/2016","dateLimite":"4/12/2016","dateRappel":"3/12/2016","depasse":"false","tarif":"1.5","codeClient":"PA6948","codeDoc":"a1"}
+{"dateEmprunt":"20/11/2016","dateLimite":"4/12/2016","dateRappel":"3/12/2016","depasse":"false","tarif":"1.5","codeClient":"PA8590","codeDoc":"v1"}
 

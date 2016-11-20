@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.event.*;
+import javax.imageio.ImageIO;
 
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.*;
@@ -52,12 +53,14 @@ public class Mediatheque implements ActionListener
 	JPanel genreDocPanel;
 	JPanel rappelPanel;
 	JPanel renewPanel;
+	JPanel deletePanel;
 	JPanel menuPanel;
 
 	/* Ajout du client */
 	JTextField nomTextField;
 	JTextField prenomTextField;
 	JTextField adresseTextField;
+	JTextField emailTextField;
 	JComboBox categorieCombo;
 
 	/* String pour le choix du JPanel à montrer */
@@ -74,8 +77,10 @@ public class Mediatheque implements ActionListener
 	static final String SEARCH_DOC_SIGNAL = "search_doc";
 
 	/* Taille de la fenêtre */
-	static final int FRAME_WIDTH = 640;
-	static final int FRAME_HEIGHT = 480;
+	static final int FRAME_WIDTH = 1000;
+	static final int FRAME_HEIGHT = 800;
+	static final int MSG_WIDTH = (FRAME_WIDTH/3) - 10;
+	static final int MSG_HEIGHT = (FRAME_HEIGHT/3) - 10;
 
 	/* Nombre de clients par catégorie */
 	int[] nbClient;
@@ -85,9 +90,17 @@ public class Mediatheque implements ActionListener
 	public Mediatheque()
 	{
 		nom = new String("Machin");
+		try
+		{
 		Calendar cal = Calendar.getInstance();
 		today = new Date();
-		today = cal.getTime();
+		today = dateFormat.parse(dateFormat.format(cal.getTime()));
+	}
+	catch(Exception e)
+	{
+		System.err.println(e.getMessage());
+		System.exit(-1);
+	}
 
 		locList = new ArrayList<Localisation>();
 		genreList = new ArrayList<Genre>();
@@ -160,12 +173,16 @@ public class Mediatheque implements ActionListener
 		cards = new JPanel();
 		cards.setLayout(new CardLayout());
 
+		// Mise à jour des messages
+		updateFiche();
+		updateClient();
+
 		// Initialisation des pages
 		showClientPanel = showClientList("");
 		cards.add(SHOW_CLIENT_SIGNAL, showClientPanel);
 		showDocPanel = showDocList("");
 		cards.add(SHOW_DOC_SIGNAL, showDocPanel);
-		menuPanel = startScreen();
+		menuPanel = menuScreen();
 		cards.add(MENU_SIGNAL, menuPanel);
 		choicePanel = choiceDocList();
 		cards.add(CHOICE_DOC_SIGNAL, choicePanel);
@@ -216,10 +233,31 @@ public class Mediatheque implements ActionListener
 			nbClient[c.getCategorie().ordinal()] = nbClient[c.getCategorie().ordinal()] + 1;
 		}
 
+		renewPanel = new JPanel();
+		renewPanel.setLayout(new BoxLayout(renewPanel, BoxLayout.Y_AXIS));
+		//renewPanel.add(new JLabel("Réinscription(s)"));
+		renewPanel.setBorder(BorderFactory.createTitledBorder("Réinscription"));
+		renewPanel.setMinimumSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+		renewPanel.setPreferredSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+
+		deletePanel = new JPanel();
+		deletePanel.setLayout(new BoxLayout(deletePanel, BoxLayout.Y_AXIS));
+		//deletePanel.add(new JLabel("Suppression(s)"));
+		deletePanel.setBorder(BorderFactory.createTitledBorder("Suppression"));
+		deletePanel.setMinimumSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+		deletePanel.setPreferredSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+
+		rappelPanel = new JPanel();
+		rappelPanel.setLayout(new BoxLayout(rappelPanel, BoxLayout.Y_AXIS));
+		//rappelPanel.add(new JLabel("Emprunt(s)"));
+		rappelPanel.setBorder(BorderFactory.createTitledBorder("Emprunt"));
+		rappelPanel.setMinimumSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+		rappelPanel.setPreferredSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+
 	}
 
 	// Menu
-	public JPanel startScreen() // Ajouter des icones aux boutons
+	public JPanel menuScreen() // Ajouter des icones aux boutons
 	{
 		// Page du menu
 		JPanel startPanel = new JPanel();
@@ -227,10 +265,22 @@ public class Mediatheque implements ActionListener
 
 		JPanel introPanel = new JPanel();
 		introPanel.setLayout(new FlowLayout());
-		introPanel.add(new JLabel("Bienvenue à " + this.nom));
-		introPanel.add(new JLabel(dateFormat.format(today)));
+		JLabel label = new JLabel("Bienvenue à " + this.nom);
+		label.setFont(new Font("Serif", Font.PLAIN, 40));
+		introPanel.add(label);
+		JLabel timeLabel = new JLabel(dateFormat.format(today));
+		timeLabel.setFont(new Font("Serif", Font.PLAIN, 14));
+		introPanel.add(timeLabel);
 
 		JButton updateButton = new JButton("Jour suivant");
+		try 
+		{
+		    Image img = ImageIO.read(getClass().getResource("./pictures/time_50.png"));
+		    updateButton.setIcon(new ImageIcon(img));
+		  } catch (IOException ex) 
+		  {
+		  	// error
+		  }
 		updateButton.setActionCommand(UPDATE_SIGNAL);
 		updateButton.addActionListener(this);
 		introPanel.add(updateButton);
@@ -239,11 +289,27 @@ public class Mediatheque implements ActionListener
 		JPanel addPanel = new JPanel(new FlowLayout());
 
 		JButton addClientButton = new JButton("Ajouter un client");
+		try 
+		{
+		    Image img = ImageIO.read(getClass().getResource("./pictures/add_client4.png"));
+		    addClientButton.setIcon(new ImageIcon(img));
+		  } catch (IOException ex) 
+		  {
+		  	// error
+		  }
 		addClientButton.setActionCommand(ADD_CLIENT_SIGNAL);
 		addClientButton.addActionListener(this);
 		addPanel.add(addClientButton);
 
 		JButton addDocButton = new JButton("Ajouter un Document");
+		try 
+		{
+		    Image img = ImageIO.read(getClass().getResource("./pictures/add_livre_cd_img_50.png"));
+		    addDocButton.setIcon(new ImageIcon(img));
+		  } catch (IOException ex) 
+		  {
+		  	// error
+		  }
 		addDocButton.setActionCommand("add_doc");
 		addDocButton.addActionListener(this);
 		addPanel.add(addDocButton);
@@ -263,19 +329,79 @@ public class Mediatheque implements ActionListener
 		JPanel showPanel = new JPanel(new FlowLayout());
 
 		JButton showClientButton = new JButton("Consulter la liste des clients");
+		try 
+		{
+		    Image img = ImageIO.read(getClass().getResource("./pictures/search_client_50.png"));
+		    showClientButton.setIcon(new ImageIcon(img));
+		  } catch (IOException ex) 
+		  {
+		  	// error
+		  }
 		showClientButton.setActionCommand(SHOW_CLIENT_SIGNAL);
 		showClientButton.addActionListener(this);
 		showPanel.add(showClientButton);
 
 		JButton showDocButton = new JButton("Consulter la liste des documents");
+		try 
+		{
+		    Image img = ImageIO.read(getClass().getResource("./pictures/search_livre_cd_img_50.png"));
+		    showDocButton.setIcon(new ImageIcon(img));
+		  } catch (IOException ex) 
+		  {
+		  	// error
+		  }
 		showDocButton.setActionCommand(CHOICE_DOC_SIGNAL);
 		showDocButton.addActionListener(this);
 		showPanel.add(showDocButton);
+
+		JPanel msgPanel = new JPanel(new FlowLayout());
+		msgPanel.setBorder(BorderFactory.createTitledBorder("E-mails envoyés pour :"));
+		//msgPanel.setLayout(new GridBagLayout());
+		//GridBagConstraints c = new GridBagConstraints();
+		
+		//if (shouldFill) 
+		//{
+		    //c.fill = GridBagConstraints.HORIZONTAL;
+		//}
+
+
+		//if (shouldWeightX) 
+		//{
+		    //c.weightx = 0.5;
+		//}
+		    /*
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		msgPanel.add(new JLabel("E-mails envoyés pour :"));
+		*/
+
+		/*
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 1;
+		*/
+		msgPanel.add(new JScrollPane(rappelPanel));
+
+		/*
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 1;
+		*/
+		msgPanel.add(new JScrollPane(renewPanel));
+
+		/*
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 2;
+		c.gridy = 1;
+		*/
+		msgPanel.add(new JScrollPane(deletePanel));
 
 		startPanel.add(introPanel);
 		startPanel.add(addPanel);
 		startPanel.add(empPanel);
 		startPanel.add(showPanel);
+		startPanel.add(msgPanel);
 
 		// refresh showclient
 
@@ -319,28 +445,43 @@ public class Mediatheque implements ActionListener
 	{
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		SpringLayout layout = new SpringLayout();
+		panel.setLayout(layout);
+		panel.setPreferredSize(new Dimension(FRAME_WIDTH/2, FRAME_HEIGHT/2));
+		panel.setBorder(BorderFactory.createTitledBorder("Ajout d'un client"));
+
+		JButton menuButton = new JButton("Menu");
+		menuButton.setActionCommand(MENU_SIGNAL);
+		menuButton.addActionListener(this);
 
 		JLabel labNom = new JLabel("Nom : ");
 		nomTextField = new JTextField(20);
-		JPanel p1 = new JPanel();
-		p1.setLayout(new BoxLayout(p1, BoxLayout.LINE_AXIS));
-		p1.add(labNom);
-		p1.add(nomTextField);
+		//JPanel p1 = new JPanel();
+		//p1.setLayout(new BoxLayout(p1, BoxLayout.LINE_AXIS));
+		//p1.add(labNom);
+		//p1.add(nomTextField);
 		
 		JLabel labPrenom = new JLabel("Prenom : ");
 		prenomTextField = new JTextField(20);
-		JPanel p2 = new JPanel();
-		p2.setLayout(new BoxLayout(p2, BoxLayout.LINE_AXIS));
-		p2.add(labPrenom);
-		p2.add(prenomTextField);
+		//JPanel p2 = new JPanel();
+		//p2.setLayout(new BoxLayout(p2, BoxLayout.LINE_AXIS));
+		//p2.add(labPrenom);
+		//p2.add(prenomTextField);
 
 		JLabel labAdresse = new JLabel("Adresse : ");
 		adresseTextField = new JTextField(20);
-		JPanel p3 = new JPanel();
-		p3.setLayout(new BoxLayout(p3, BoxLayout.LINE_AXIS));
-		p3.add(labAdresse);
-		p3.add(adresseTextField);
+		//JPanel p3 = new JPanel();
+		//p3.setLayout(new BoxLayout(p3, BoxLayout.LINE_AXIS));
+		//p3.add(labAdresse);
+		//p3.add(adresseTextField);
+
+		JLabel labEmail = new JLabel("E-Mail : ");
+		emailTextField = new JTextField(20);
+		//JPanel p5 = new JPanel();
+		//p5.setLayout(new BoxLayout(p5, BoxLayout.LINE_AXIS));
+		//p5.add(labEmail);
+		//p5.add(emailTextField);
 
 		JLabel labCombo = new JLabel("Catégorie : ");
 		categorieCombo = new JComboBox();
@@ -349,21 +490,68 @@ public class Mediatheque implements ActionListener
 		{
 			categorieCombo.addItem(c.getNom());
 		}
-		JPanel p4 = new JPanel();
-		p4.setLayout(new BoxLayout(p4, BoxLayout.LINE_AXIS));
-		p4.add(labCombo);
-		p4.add(categorieCombo);
+		//JPanel p4 = new JPanel();
+		//p4.setLayout(new BoxLayout(p4, BoxLayout.LINE_AXIS));
+		//p4.add(labCombo);
+		//p4.add(categorieCombo);
 
 		JButton okButton = new JButton("OK");
 		okButton.setActionCommand(CREATE_CLIENT_SIGNAL);
 		okButton.addActionListener(this);
 		frame.getRootPane().setDefaultButton(okButton);
 
+		/*
 		panel.add(p1);
 		panel.add(p2);
 		panel.add(p3);
+		panel.add(p5);
 		panel.add(p4);
+		*/
+
+		panel.add(menuButton);
+		panel.add(labNom);
+		panel.add(nomTextField);
+		panel.add(labPrenom);
+		panel.add(prenomTextField);
+		panel.add(labAdresse);
+		panel.add(adresseTextField);
+		panel.add(labEmail);
+		panel.add(emailTextField);
+		panel.add(labCombo);
+		panel.add(categorieCombo);
 		panel.add(okButton);
+
+		layout.putConstraint(SpringLayout.WEST, menuButton, panel.getWidth()/2, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, menuButton, 25, SpringLayout.NORTH, panel);
+
+		layout.putConstraint(SpringLayout.WEST, labNom, 10, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, labNom, 50, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.NORTH, nomTextField, 50, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.WEST, nomTextField, 20, SpringLayout.EAST, labNom);
+
+	    layout.putConstraint(SpringLayout.WEST, labPrenom, 10, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, labPrenom, 75, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.NORTH, prenomTextField, 75, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.WEST, prenomTextField, 20, SpringLayout.EAST, labPrenom);
+
+	    layout.putConstraint(SpringLayout.WEST, labAdresse, 10, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, labAdresse, 100, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.NORTH, adresseTextField, 100, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.WEST, adresseTextField, 20, SpringLayout.EAST, labAdresse);
+
+	    layout.putConstraint(SpringLayout.WEST, labEmail, 10, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, labEmail, 125, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.NORTH, emailTextField, 125, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.WEST, emailTextField, 20, SpringLayout.EAST, labEmail);
+
+	    layout.putConstraint(SpringLayout.WEST, labCombo, 10, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, labCombo, 150, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.NORTH, categorieCombo, 150, SpringLayout.NORTH, panel);
+	    layout.putConstraint(SpringLayout.WEST, categorieCombo, 20, SpringLayout.EAST, labCombo);
+
+	    layout.putConstraint(SpringLayout.WEST, okButton, panel.getWidth()/2, SpringLayout.WEST, panel);
+	    layout.putConstraint(SpringLayout.NORTH, okButton, 175, SpringLayout.NORTH, panel);
+
 
 		return panel;
 	}
@@ -479,7 +667,7 @@ public class Mediatheque implements ActionListener
 		}
 
 		// Titre des colonnes
-		String title[] = {"Catégorie", "Nom", "Prénom", "Adresse", "Inscription", "Renouvellement", "Emprunts effectués", "Emprunts dépassés", "Emprunts en cours", "Code de Réduction"};
+		String title[] = {"Catégorie", "Nom", "Prénom", "Adresse", "E-Mail", "Inscription", "Renouvellement", "Emprunts effectués", "Emprunts dépassés", "Emprunts en cours", "Code de Réduction"};
 
 		clientTable = new JXTable(new CustomTableModel(data, title));
 		if(!text.isEmpty()) // Si on a fait une recherche
@@ -501,9 +689,14 @@ public class Mediatheque implements ActionListener
 	{
 		JPanel choicePanel = new JPanel();
 		choicePanel.setLayout(new BorderLayout());
+		choicePanel.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+
+		JButton menuButton = new JButton("Menu");
+		menuButton.setActionCommand(MENU_SIGNAL);
+		menuButton.addActionListener(this);
 
 		JButton locButton = new JButton("Par localisation");
 		locButton.setActionCommand(LOC_DOC_SIGNAL);
@@ -517,6 +710,7 @@ public class Mediatheque implements ActionListener
 		allButton.setActionCommand(SHOW_DOC_SIGNAL);
 		allButton.addActionListener(this);
 
+		p.add(menuButton);
 		p.add(locButton);
 		p.add(genreButton);
 		p.add(allButton);
@@ -996,7 +1190,7 @@ public void actionPerformed(ActionEvent e)
 {
 		if(e.getActionCommand().equals(MENU_SIGNAL)) // Menu
 		{
-			//startScreen();
+			//menuScreen();
 			((CardLayout) cards.getLayout()).show(cards,MENU_SIGNAL);
 		}
 		else if(e.getActionCommand().equals(UPDATE_SIGNAL)) // Mise à jour de la médiathèque
@@ -1055,13 +1249,13 @@ public void actionPerformed(ActionEvent e)
 		}
 		else if(e.getActionCommand().equals(CREATE_CLIENT_SIGNAL)) // Création d'un client
 		{
-			if(!nomTextField.getText().isEmpty() && !prenomTextField.getText().isEmpty() && !adresseTextField.getText().isEmpty())
+			if(!nomTextField.getText().isEmpty() && !prenomTextField.getText().isEmpty() && !adresseTextField.getText().isEmpty() && !emailTextField.getText().isEmpty())
 			{
 
 				CategorieClient cat = CategorieClient.ETUDIANT;
 				cat = cat.setCategorie(categorieCombo.getSelectedItem().toString());
 
-				Client c = new Client(cat, new String(nomTextField.getText()), new String(prenomTextField.getText()), new String(adresseTextField.getText()), nbClient);
+				Client c = new Client(cat, new String(nomTextField.getText()), new String(prenomTextField.getText()), new String(adresseTextField.getText()), new String(emailTextField.getText()), nbClient);
 				if(!alreadyInClientList(c)) // Vérifier que ça fonctionne (atributs) meme sans pointeurs
 				{
 					clientList.add(c);
@@ -1523,7 +1717,7 @@ public void actionPerformed(ActionEvent e)
 
 		// Mise à jour de la page de manu
 		cards.remove(menuPanel);
-		menuPanel = startScreen();
+		menuPanel = menuScreen();
 		cards.add(MENU_SIGNAL, menuPanel);
 		((CardLayout) cards.getLayout()).show(cards,MENU_SIGNAL);
 
@@ -1534,20 +1728,25 @@ public void actionPerformed(ActionEvent e)
 	{
 		rappelPanel = new JPanel();
 		rappelPanel.setLayout(new BoxLayout(rappelPanel, BoxLayout.Y_AXIS));
+		//rappelPanel.add(new JLabel("Emprunt(s)"));
+		rappelPanel.setBorder(BorderFactory.createTitledBorder("Emprunt"));
+		rappelPanel.setMinimumSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+		rappelPanel.setPreferredSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+
 		for(int i=0; i<ficheList.size(); i++)
 		{
 			// Mise à jour de la fiche
-			if(ficheList.get(i).update()) // emprunt depasse
+			if(ficheList.get(i).update(today)) // emprunt depasse
 			{
 				ficheList.get(i).getClient(clientList).addEmpruntDepasse();
 			}
 
 			// Vérifie les rappels
-			if(ficheList.get(i).giveRappel())
+			if(ficheList.get(i).giveRappel(today))
 			{
 				Document d = ficheList.get(i).getDoc(docList);
 				Client c = ficheList.get(i).getClient(clientList);
-				rappelPanel.add(new JLabel(d.getTitre() + " de " + d.getAuteur() + " emprunté par " + c.getPrenom() + " " + c.getNom().toUpperCase()));
+				rappelPanel.add(new JLabel("- " + d.getTitre() + " de " + d.getAuteur() + " emprunté par " + c.getPrenom() + " " + c.getNom().toUpperCase()));
 			}
 		}
 	}
@@ -1557,18 +1756,31 @@ public void actionPerformed(ActionEvent e)
 	{
 		renewPanel = new JPanel();
 		renewPanel.setLayout(new BoxLayout(renewPanel, BoxLayout.Y_AXIS));
+		//renewPanel.add(new JLabel("Réinscription(s)"));
+		renewPanel.setBorder(BorderFactory.createTitledBorder("Réinscription"));
+		renewPanel.setMinimumSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+		renewPanel.setPreferredSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+
+		deletePanel = new JPanel();
+		deletePanel.setLayout(new BoxLayout(deletePanel, BoxLayout.Y_AXIS));
+		//deletePanel.add(new JLabel("Suppression(s)"));
+		deletePanel.setBorder(BorderFactory.createTitledBorder("Suppression"));
+		deletePanel.setMinimumSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+		deletePanel.setPreferredSize(new Dimension(MSG_WIDTH,MSG_HEIGHT));
+
 		int i = 0;
 		while(i < clientList.size())
 		{
 			// Suppression des clients s'ils ne se sont pas réinscrit après 3 mois
-			if(clientList.get(i).delete())
+			if(clientList.get(i).delete(today))
 			{
+				deletePanel.add(new JLabel("- " + clientList.get(i).getPrenom() + " " + clientList.get(i).getNom()));
 				clientList.remove(i);
 			}
 			// Envoie des rappels de réinscription
-			else if(clientList.get(i).haveToRenew())
+			else if(clientList.get(i).haveToRenew(today))
 			{
-				renewPanel.add(new JLabel(clientList.get(i).getPrenom() + " " + clientList.get(i).getNom()));
+				renewPanel.add(new JLabel("- " + clientList.get(i).getPrenom() + " " + clientList.get(i).getNom()));
 				i++;
 			}
 			else

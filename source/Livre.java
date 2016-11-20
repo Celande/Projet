@@ -18,6 +18,9 @@ public class Livre extends Document
 		this.genre = genre;
 
 		this.nbPages = nbPages;
+
+		super.DUREE = this.DUREE;
+		super.TARIF = this.TARIF;
 	}
 
 	public Livre()
@@ -31,6 +34,9 @@ public class Livre extends Document
 		this.genre = Genre.AUTRE; // Par défaut
 
 		this.nbPages = 0;
+
+		super.DUREE = this.DUREE;
+		super.TARIF = this.TARIF;
 	}
 
 	public int getNbPages()

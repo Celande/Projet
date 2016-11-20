@@ -15,6 +15,7 @@ public class Client
 	private String nom;
 	private String prenom;
 	private String adresse;
+	private String email;
 	private Date dateInscription;
 	private Date dateRenouvellement;
 	private int nbEmpruntsEffectues;
@@ -32,153 +33,184 @@ public class Client
 		this.nom = "";
 		this.prenom = "";
 		this.adresse = "";
+		this.email = "";
 
-		Calendar calendar = Calendar.getInstance();
-		this.dateInscription = new Date();
-		this.dateInscription = calendar.getTime();
+		try
+		{
+			Calendar cal = Calendar.getInstance();
+			this.dateInscription = new Date();
+		this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 		this.dateRenouvellement = new Date();
 		//calendar.add(Calendar.YEAR, 1);
-		this.dateRenouvellement = calendar.getTime();
-
-		this.nbEmpruntsEffectues = 0;
-		this.nbEmpruntsDepasses = 0;
-		this.nbEmpruntsEnCours = 0;
-		this.codeReduction = 0;
-
-		this.matricule = "";
-
+		this.dateRenouvellement = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
+	}
+	catch(Exception e)
+	{
+		System.err.println(e.getMessage());
+		System.exit(-1);
 	}
 
-	Client(CategorieClient cat, String nom, String prenom, String adresse, int[] nbClient)
-	{
-		this.categorie = cat;
-		this.nom = firstUpperCase(nom);
-		this.prenom = firstUpperCase(prenom);
-		this.adresse = firstUpperCase(adresse);
+	this.nbEmpruntsEffectues = 0;
+	this.nbEmpruntsDepasses = 0;
+	this.nbEmpruntsEnCours = 0;
+	this.codeReduction = 0;
 
-		Calendar calendar = Calendar.getInstance();
+	this.matricule = "";
+
+}
+
+Client(CategorieClient cat, String nom, String prenom, String adresse, String email, int[] nbClient)
+{
+	this.categorie = cat;
+	this.nom = firstUpperCase(nom);
+	this.prenom = firstUpperCase(prenom);
+	this.adresse = firstUpperCase(adresse);
+	this.email = email;
+
+	try
+	{
+		Calendar cal = Calendar.getInstance();
 		this.dateInscription = new Date();
-		this.dateInscription = calendar.getTime();
+		this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 		this.dateRenouvellement = new Date();
 		this.dateRenouvellement = this.dateInscription;
+	}
+	catch(Exception e)
+	{
+		System.err.println(e.getMessage());
+		System.exit(-1);
+	}
 
-		this.nbEmpruntsEffectues = 0;
-		this.nbEmpruntsDepasses = 0;
-		this.nbEmpruntsEnCours = 0;
-		this.codeReduction = 0;
+	this.nbEmpruntsEffectues = 0;
+	this.nbEmpruntsDepasses = 0;
+	this.nbEmpruntsEnCours = 0;
+	this.codeReduction = 0;
 
 		// matricule = "deux 1ere lettre de la catégorie" + "nombre de clients actuellement dans cettes catégorie + 1"
-		nbClient[categorie.ordinal()] = nbClient[categorie.ordinal()] + 1;
-		this.matricule = categorie.name().substring(0,2) + Integer.toString(nbClient[categorie.ordinal()]);
+	nbClient[categorie.ordinal()] = nbClient[categorie.ordinal()] + 1;
+	this.matricule = categorie.name().substring(0,2) + Integer.toString(nbClient[categorie.ordinal()]);
 
-		System.out.println("Client (cat ...) - matricule = " + matricule);
-	}
-	
+	System.out.println("Client (cat ...) - matricule = " + matricule);
+}
+
 	// Génération de clients pour les tests
-	Client(String x)
-	{
-		this.categorie = CategorieClient.PARTICULIER;
-		this.nom = x;
-		this.prenom = x;
-		this.adresse = x;
+Client(String x)
+{
+	this.categorie = CategorieClient.PARTICULIER;
+	this.nom = x;
+	this.prenom = x;
+	this.adresse = x;
+	this.email = x + "@lol.fr";
 
-		Calendar calendar = Calendar.getInstance();
+	try
+	{
+		Calendar cal = Calendar.getInstance();
 		this.dateInscription = new Date();
-		this.dateInscription = calendar.getTime();
+		this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 		this.dateRenouvellement = new Date();
 		this.dateRenouvellement = this.dateInscription;
+	}
+	catch(Exception e)
+	{
+		System.err.println(e.getMessage());
+		System.exit(-1);
+	}
 
-		this.nbEmpruntsEffectues = 0;
-		this.nbEmpruntsDepasses = 0;
-		this.nbEmpruntsEnCours = 0;
-		this.codeReduction = 0;
+	this.nbEmpruntsEffectues = 0;
+	this.nbEmpruntsDepasses = 0;
+	this.nbEmpruntsEnCours = 0;
+	this.codeReduction = 0;
 
 		// Matricule aléatoire
 
-		int n = (int) (1 + (Math.random() * (10000 - 1)));
+	int n = (int) (1 + (Math.random() * (10000 - 1)));
 
-		this.matricule = categorie.name().substring(0,2) + Integer.toString(n);
-		System.out.println("Client (String) - matricule = " + this.matricule);
-	}
+	this.matricule = categorie.name().substring(0,2) + Integer.toString(n);
+	//System.out.println("Client (String) - matricule = " + this.matricule);
+}
 
-	public CategorieClient getCategorie()
-	{
-		return this.categorie;
-	}
-	
-	public String getNom()
-	{
-		return this.nom;
-	}
+public CategorieClient getCategorie()
+{
+	return this.categorie;
+}
 
-	public String getPrenom()
-	{
-		return this.prenom;
-	}
+public String getNom()
+{
+	return this.nom;
+}
 
-	public String getAdresse()
-	{
-		return this.adresse;
-	}
+public String getPrenom()
+{
+	return this.prenom;
+}
 
-	public String getNomCategorie()
-	{
-		return this.categorie.getNom();
-	}
+public String getAdresse()
+{
+	return this.adresse;
+}
 
-	public String getMatricule()
-	{
-		return this.matricule;
-	}
+public String getEmail()
+{
+	return this.email;
+}
+
+public String getNomCategorie()
+{
+	return this.categorie.getNom();
+}
+
+public String getMatricule()
+{
+	return this.matricule;
+}
 
 	// Renvoit les données pour un tableau
-	public Object[] getTable()
-	{
-		Object[] tab = {this.categorie, this.nom, this.prenom, this.adresse, dateFormat.format(this.dateInscription), dateFormat.format(this.dateRenouvellement), this.nbEmpruntsEffectues, this.nbEmpruntsEffectues, this.nbEmpruntsEnCours, this.codeReduction};
+public Object[] getTable()
+{
+	Object[] tab = {this.categorie, this.nom, this.prenom, this.adresse, this.email, dateFormat.format(this.dateInscription), dateFormat.format(this.dateRenouvellement), this.nbEmpruntsEffectues, this.nbEmpruntsEffectues, this.nbEmpruntsEnCours, this.codeReduction};
 
-		return tab;
-	}
+	return tab;
+}
 
-	public String toString()
-	{
-		return "Client : " + this.nom.toUpperCase() + " " + this.prenom + "\nAdresse : " + this.adresse + "\nCategorie : " + this.categorie.getNom() + "\nDate d'inscription : " + dateFormat.format(this.dateInscription);
-	}
+public String toString()
+{
+	return "Client : " + this.nom.toUpperCase() + " " + this.prenom + "\nAdresse : " + this.adresse + "\nEmail : " + this.email + "\nCategorie : " + this.categorie.getNom() + "\nDate d'inscription : " + dateFormat.format(this.dateInscription);
+}
 
-	public String firstUpperCase(String s)
+public String firstUpperCase(String s)
+{
+	StringBuilder str = new StringBuilder();
+	if(!s.isEmpty())
 	{
-		StringBuilder str = new StringBuilder();
-		if(!s.isEmpty())
+		str.append(Character.toUpperCase(s.charAt(0)));
+		for(int i=1; i<s.length(); i++)
 		{
-			str.append(Character.toUpperCase(s.charAt(0)));
-			for(int i=1; i<s.length(); i++)
+			if(s.charAt(i-1) == ' ' || s.charAt(i-1) == '-' || s.charAt(i-1) == '\'')
 			{
-				if(s.charAt(i-1) == ' ' || s.charAt(i-1) == '-' || s.charAt(i-1) == '\'')
-				{
-					str.append(Character.toUpperCase(s.charAt(i)));
-				}
-				else
-				{
-					str.append(Character.toLowerCase(s.charAt(i)));
-				}
+				str.append(Character.toUpperCase(s.charAt(i)));
+			}
+			else
+			{
+				str.append(Character.toLowerCase(s.charAt(i)));
 			}
 		}
-		return str.toString();
 	}
+	return str.toString();
+}
 
-	public void addEmpruntDepasse()
-	{
-		this.nbEmpruntsDepasses ++;
-	}
+public void addEmpruntDepasse()
+{
+	this.nbEmpruntsDepasses ++;
+}
 
 	// Nécessité de se réinscrire
-	public Boolean haveToRenew()
-	{
-		Calendar calendar = Calendar.getInstance();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(this.dateRenouvellement);
+public Boolean haveToRenew(Date today)
+{
+	Calendar cal = Calendar.getInstance();
+	cal.setTime(this.dateRenouvellement);
 		cal.add(Calendar.YEAR, 1); // date de renouvellement + 1 an
 		// Si le renouvellement date de plsu d'un an
-		if(calendar.getTime().equals(cal.getTime()) || calendar.getTime().after(cal.getTime()))
+		if(today.equals(cal.getTime()) || today.after(cal.getTime()))
 		{
 			return true;
 		}
@@ -187,23 +219,31 @@ public class Client
 	}
 
 	// Réinscription
-	public void reinscription()
+	public void reinscription(Date today)
 	{
 		Calendar cal = Calendar.getInstance();
-		this.dateRenouvellement = cal.getTime(); // mise à jour de la date de renouvellement
+		// mise à jour de la date de renouvellement
+		try
+		{
+		this.dateRenouvellement = today; // Pour être sûr que les calculs prennent en comptent les jours
 	}
+	catch(Exception e)
+	{
+		System.err.println(e.getMessage());
+		System.exit(-1);
+	}
+}
 
 	// Supression du client
-	public Boolean delete()
+	public Boolean delete(Date today)
 	{
-		Calendar now = Calendar.getInstance();
 		Calendar max = Calendar.getInstance();
 		max.setTime(this.dateRenouvellement);
 		max.add(Calendar.YEAR, 1);
 		max.add(Calendar.MONTH, 3); // On a 3 mois pour se réinscrire
 
 		// Si on ne se réinscrit pas dans les 3 mois
-		if(now.getTime().equals(max.getTime()) || now.getTime().after(max.getTime()))
+		if(today.equals(max.getTime()) || today.after(max.getTime()))
 		{
 			return true;
 		}
@@ -215,21 +255,22 @@ public class Client
 	public JsonObject write()
 	{
 		JsonObject obj = Json.createObjectBuilder()
-			.add("categorie", this.categorie.writeBuilder())
-		   .add("nom", this.nom)
-		   .add("prenom", this.prenom)
-		   .add("adresse", this.adresse)
-		   .add("dateInscription", dateFormat.format(this.dateInscription))
-		   .add("dateRenouvellement", dateFormat.format(this.dateRenouvellement))
-		   .add("nbEmpruntsEffectues", this.nbEmpruntsEffectues)
-		   .add("nbEmpruntsDepasses", this.nbEmpruntsDepasses)
-		   .add("nbEmpruntsEnCours", this.nbEmpruntsEnCours)
-		   .add("codeReduction", this.codeReduction)
-		   .add("matricule", this.matricule)
-		   .build()
-		         ;
+		.add("categorie", this.categorie.writeBuilder())
+		.add("nom", this.nom)
+		.add("prenom", this.prenom)
+		.add("adresse", this.adresse)
+		.add("email", this.email)
+		.add("dateInscription", dateFormat.format(this.dateInscription))
+		.add("dateRenouvellement", dateFormat.format(this.dateRenouvellement))
+		.add("nbEmpruntsEffectues", this.nbEmpruntsEffectues)
+		.add("nbEmpruntsDepasses", this.nbEmpruntsDepasses)
+		.add("nbEmpruntsEnCours", this.nbEmpruntsEnCours)
+		.add("codeReduction", this.codeReduction)
+		.add("matricule", this.matricule)
+		.build()
+		;
 
-	   return obj;
+		return obj;
 
 	}
 
@@ -239,83 +280,88 @@ public class Client
 		try{
 			while (parser.hasNext()) 
 			{
-			   JsonParser.Event event = parser.next();
-			   switch(event) 
-			   {
-			      case START_ARRAY:
-			      case END_ARRAY:
-			      case START_OBJECT:
-			      case END_OBJECT:
-			      case VALUE_FALSE:
-			      case VALUE_NULL:
-			      case VALUE_TRUE:
-			         break;
-			      case KEY_NAME:
-			      	if(parser.getString().equals("categorie"))
-			      	{
-			      		parser.next();
-			      		this.categorie = this.categorie.read(parser);
-			      	}
-			      	else if(parser.getString().equals("nom"))
-			      	{
-			      		parser.next();
-			      		this.nom = firstUpperCase(parser.getString());
-			      	}
-			      	else if(parser.getString().equals("prenom"))
-			      	{
-			      		parser.next();
-			      		this.prenom = firstUpperCase(parser.getString());
-			      	}
-			      	else if(parser.getString().equals("adresse"))
-			      	{
-			      		parser.next();
-			      		this.adresse = firstUpperCase(parser.getString());
-			      	}
-			      	else if(parser.getString().equals("dateInscription"))
-			      	{
-			      		parser.next();
-			      		this.dateInscription = dateFormat.parse(parser.getString());
-			      	}
-			      	else if(parser.getString().equals("dateRenouvellement"))
-			      	{
-			      		parser.next();
-			      		this.dateRenouvellement = dateFormat.parse(parser.getString());
-			      	}
-			      	else if(parser.getString().equals("nbEmpruntsEffectues"))
-			      	{
-			      		parser.next();
-			      		this.nbEmpruntsEffectues = parser.getInt();
-			      	}
-			      	else if(parser.getString().equals("nbEmpruntsDepasses"))
-			      	{
-			      		parser.next();
-			      		this.nbEmpruntsDepasses = parser.getInt();
-			      	}
-			      	else if(parser.getString().equals("nbEmpruntsEnCours"))
-			      	{
-			      		parser.next();
-			      		this.nbEmpruntsEnCours = parser.getInt();
-			      	}
-			      	else if(parser.getString().equals("codeReduction"))
-			      	{
-			      		parser.next();
-			      		this.codeReduction = parser.getInt();
-			      	}
-			      	else if(parser.getString().equals("matricule"))
-			      	{
-			      		parser.next();
-			      		this.matricule = parser.getString();
-			      	}
-			      	else
-			      	{
+				JsonParser.Event event = parser.next();
+				switch(event) 
+				{
+					case START_ARRAY:
+					case END_ARRAY:
+					case START_OBJECT:
+					case END_OBJECT:
+					case VALUE_FALSE:
+					case VALUE_NULL:
+					case VALUE_TRUE:
+					break;
+					case KEY_NAME:
+					if(parser.getString().equals("categorie"))
+					{
+						parser.next();
+						this.categorie = this.categorie.read(parser);
+					}
+					else if(parser.getString().equals("nom"))
+					{
+						parser.next();
+						this.nom = firstUpperCase(parser.getString());
+					}
+					else if(parser.getString().equals("prenom"))
+					{
+						parser.next();
+						this.prenom = firstUpperCase(parser.getString());
+					}
+					else if(parser.getString().equals("adresse"))
+					{
+						parser.next();
+						this.adresse = firstUpperCase(parser.getString());
+					}
+					else if(parser.getString().equals("email"))
+					{
+						parser.next();
+						this.email = parser.getString();
+					}
+					else if(parser.getString().equals("dateInscription"))
+					{
+						parser.next();
+						this.dateInscription = dateFormat.parse(parser.getString());
+					}
+					else if(parser.getString().equals("dateRenouvellement"))
+					{
+						parser.next();
+						this.dateRenouvellement = dateFormat.parse(parser.getString());
+					}
+					else if(parser.getString().equals("nbEmpruntsEffectues"))
+					{
+						parser.next();
+						this.nbEmpruntsEffectues = parser.getInt();
+					}
+					else if(parser.getString().equals("nbEmpruntsDepasses"))
+					{
+						parser.next();
+						this.nbEmpruntsDepasses = parser.getInt();
+					}
+					else if(parser.getString().equals("nbEmpruntsEnCours"))
+					{
+						parser.next();
+						this.nbEmpruntsEnCours = parser.getInt();
+					}
+					else if(parser.getString().equals("codeReduction"))
+					{
+						parser.next();
+						this.codeReduction = parser.getInt();
+					}
+					else if(parser.getString().equals("matricule"))
+					{
+						parser.next();
+						this.matricule = parser.getString();
+					}
+					else
+					{
 			      		// error
-			      	}
-			         break;
-			         default:
-			         break;
-			   }
+					}
+					break;
+					default:
+					break;
+				}
 			}
-	
+
 		}
 		catch(Exception e)
 		{
