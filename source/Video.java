@@ -5,8 +5,8 @@ public class Video extends Document
 {
 	private int dureeFilm; // en min
 	private String mentionsLegales;
-	public static int DUREE = 2*7;
-	public static double TARIF = 1.5;	
+	public static final int DUREE = 2*7;
+	public static final double TARIF = 1.5;	
 
 	public Video(String code, String titre, String auteur, String annee, Localisation loc, Genre genre, int dureeFilm, String mentionsLegales)
 	{
@@ -20,6 +20,20 @@ public class Video extends Document
 
 		this.dureeFilm = dureeFilm;
 		this.mentionsLegales = mentionsLegales;
+	}
+
+	public Video()
+	{
+		this.code = "";
+		this.titre = "";
+		this.auteur = "";
+		this.annee = "";
+
+		this.loc = new Localisation();
+		this.genre = Genre.AUTRE; // Par défaut
+
+		this.dureeFilm = 0;
+		this.mentionsLegales = "";
 	}
 
 	public int getDuree()
@@ -42,50 +56,38 @@ public class Video extends Document
 		return this.mentionsLegales;
 	}
 
+	@Override
+	// Renvoit les données pour un tableau
+	public Object[] getTable()
+	{
+		Object[] tab = {this.code, this.titre, this.auteur, this.annee, this.emprunte, this.nbEmprunts, this.genre, this.dureeFilm, this.mentionsLegales};
+		return tab;
+	}
+
+	@Override
+	// Renvoit un objet décrivant les attributs du document
 	public JsonObject write()
 	{
 		JsonObject obj = Json.createObjectBuilder()
-			.add("code", code)
-		   .add("titre", titre)
-		   .add("auteur", auteur)
-		   .add("annee", annee)
-		   .add("empruntable", empruntable.toString())
-		   .add("emprunte", emprunte.toString())
-		   .add("nbEmprunts", nbEmprunts)
-		   .add("dureeFilm", dureeFilm)
-		   .add("mentionsLegales", mentionsLegales)
-		   // localisation
-		   .add("loc", loc.writeBuilder())
-		   // genre
-		   .add("genre", genre.writeBuilder())
+			.add("code", this.code)
+		   .add("titre", this.titre)
+		   .add("auteur", this.auteur)
+		   .add("annee", this.annee)
+		   .add("empruntable", this.empruntable.toString())
+		   .add("emprunte", this.emprunte.toString())
+		   .add("nbEmprunts", this.nbEmprunts)
+		   .add("dureeFilm", this.dureeFilm)
+		   .add("mentionsLegales", this.mentionsLegales)
+		   .add("loc", this.loc.writeBuilder())
+		   .add("genre", this.genre.writeBuilder())
 		   .build()
 		   ;
 
 	   return obj;
 	}
 
-	public JsonObjectBuilder writeBuilder()
-	{
-		JsonObjectBuilder obj = Json.createObjectBuilder()
-			.add("code", code)
-		   .add("titre", titre)
-		   .add("auteur", auteur)
-		   .add("annee", annee)
-		   .add("empruntable", empruntable.toString())
-		   .add("emprunte", emprunte.toString())
-		   .add("nbEmprunts", nbEmprunts)
-		   .add("dureeFilm", dureeFilm)
-		   .add("mentionsLegales", mentionsLegales)
-		   // localisation
-		   .add("loc", loc.writeBuilder())
-		   // genre
-		   .add("genre", genre.writeBuilder())
-		   //.build()
-		   ;
-
-	   return obj;
-	}
-
+	@Override
+	// Lit les attributs du document
 	public void read(JsonParser parser)
 	{
 		try{
@@ -106,59 +108,57 @@ public class Video extends Document
 			      	if(parser.getString().equals("code"))
 			      	{
 			      		parser.next();
-			      		code = parser.getString();
+			      		this.code = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("titre"))
 			      	{
 			      		parser.next();
-			      		titre = parser.getString();
+			      		this.titre = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("auteur"))
 			      	{
 			      		parser.next();
-			      		auteur = parser.getString();
+			      		this.auteur = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("annee"))
 			      	{
 			      		parser.next();
-			      		annee = parser.getString();
+			      		this.annee = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("empruntable"))
 			      	{
 			      		parser.next();
-			      		empruntable = fromStringToBool(parser.getString());
+			      		this.empruntable = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("emprunte"))
 			      	{
 			      		parser.next();
-			      		emprunte = fromStringToBool(parser.getString());
+			      		this.emprunte = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("nbEmprunts"))
 			      	{
 			      		parser.next();
-			      		nbEmprunts = parser.getInt();
+			      		this.nbEmprunts = parser.getInt();
 			      	}
-			      	// localisation
 			      	else if(parser.getString().equals("loc"))
 			      	{
 			      		parser.next();
-			      		loc.read(parser);
+			      		this.loc.read(parser);
 			      	}
-			      	// genre
 			      	else if(parser.getString().equals("genre"))
 			      	{
 			      		parser.next();
-			      		genre.read(parser);
+			      		this.genre = genre.read(parser);
 			      	}
 			      	else if(parser.getString().equals("dureeFilm"))
 			      	{
 			      		parser.next();
-			      		dureeFilm = parser.getInt();
+			      		this.dureeFilm = parser.getInt();
 			      	}
 			      	else if(parser.getString().equals("mentionsLegales"))
 			      	{
 			      		parser.next();
-			      		mentionsLegales = parser.getString();
+			      		this.mentionsLegales = parser.getString();
 			      	}
 			      	else
 			      	{

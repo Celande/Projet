@@ -4,8 +4,8 @@ import javax.json.stream.*;
 public class Audio extends Document
 {
 	private String classification;
-	public static int DUREE = 4*7;
-	public static double TARIF = 1.0;	
+	public static final int DUREE = 4*7;
+	public static final double TARIF = 1.0;	
 
 	public Audio(String code, String titre, String auteur, String annee, Localisation loc, Genre genre, String classification)
 	{
@@ -19,16 +19,18 @@ public class Audio extends Document
 
 		this.classification = classification;
 	}
-	
 
-	public int getDuree()
+	public Audio()
 	{
-		return this.DUREE;
-	}
+		this.code = "";
+		this.titre = "";
+		this.auteur = "";
+		this.annee = "";
 
-	public double getTarif()
-	{
-		return this.TARIF;
+		this.loc = new Localisation();
+		this.genre = Genre.AUTRE; // Par défaut
+
+		this.classification = "";
 	}
 
 	public String getClassification()
@@ -36,48 +38,37 @@ public class Audio extends Document
 		return this.classification;
 	}
 
+	@Override
+	// Renvoit les données pour un tableau
+	public Object[] getTable()
+	{
+		Object[] tab = {this.code, this.titre, this.auteur, this.annee, this.emprunte, this.nbEmprunts, this.genre, this.classification};
+		return tab;
+	}
+
+	@Override
+	// Renvoit un objet décrivant les attributs du document
 	public JsonObject write()
 	{
 		JsonObject obj = Json.createObjectBuilder()
-			.add("code", code)
-		   .add("titre", titre)
-		   .add("auteur", auteur)
-		   .add("annee", annee)
-		   .add("empruntable", empruntable.toString())
-		   .add("emprunte", emprunte.toString())
-		   .add("nbEmprunts", nbEmprunts)
-		   .add("classification", classification)
-		   // localisation
-		   .add("loc", loc.writeBuilder())
-		   // genre
-		   .add("genre", genre.writeBuilder())
+			.add("code", this.code)
+		   .add("titre", this.titre)
+		   .add("auteur", this.auteur)
+		   .add("annee", this.annee)
+		   .add("empruntable", this.empruntable.toString())
+		   .add("emprunte", this.emprunte.toString())
+		   .add("nbEmprunts", this.nbEmprunts)
+		   .add("classification", this.classification)
+		   .add("loc", this.loc.writeBuilder())
+		   .add("genre", this.genre.writeBuilder())
 		   .build()
 		   ;
 
 	   return obj;
 	}
 
-	public JsonObjectBuilder writeBuilder()
-	{
-		JsonObjectBuilder obj = Json.createObjectBuilder()
-			.add("code", code)
-		   .add("titre", titre)
-		   .add("auteur", auteur)
-		   .add("annee", annee)
-		   .add("empruntable", empruntable.toString())
-		   .add("emprunte", emprunte.toString())
-		   .add("nbEmprunts", nbEmprunts)
-		   .add("classification", classification)
-		   // localisation
-		   .add("loc", loc.writeBuilder())
-		   // genre
-		   .add("genre", genre.writeBuilder())
-		   //.build()
-		   ;
-
-	   return obj;
-	}
-
+	@Override
+	// Lit les attributs du document
 	public void read(JsonParser parser)
 	{
 		try{
@@ -98,54 +89,52 @@ public class Audio extends Document
 			      	if(parser.getString().equals("code"))
 			      	{
 			      		parser.next();
-			      		code = parser.getString();
+			      		this.code = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("titre"))
 			      	{
 			      		parser.next();
-			      		titre = parser.getString();
+			      		this.titre = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("auteur"))
 			      	{
 			      		parser.next();
-			      		auteur = parser.getString();
+			      		this.auteur = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("annee"))
 			      	{
 			      		parser.next();
-			      		annee = parser.getString();
+			      		this.annee = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("empruntable"))
 			      	{
 			      		parser.next();
-			      		empruntable = fromStringToBool(parser.getString());
+			      		this.empruntable = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("emprunte"))
 			      	{
 			      		parser.next();
-			      		emprunte = fromStringToBool(parser.getString());
+			      		this.emprunte = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("nbEmprunts"))
 			      	{
 			      		parser.next();
-			      		nbEmprunts = parser.getInt();
+			      		this.nbEmprunts = parser.getInt();
 			      	}
-			      	// localisation
 			      	else if(parser.getString().equals("loc"))
 			      	{
 			      		parser.next();
-			      		loc.read(parser);
+			      		this.loc.read(parser);
 			      	}
-			      	// genre
 			      	else if(parser.getString().equals("genre"))
 			      	{
 			      		parser.next();
-			      		genre.read(parser);
+			      		this.genre = genre.read(parser);
 			      	}
 			      	else if(parser.getString().equals("classification"))
 			      	{
 			      		parser.next();
-			      		classification = parser.getString();
+			      		this.classification = parser.getString();
 			      	}
 			      	else
 			      	{

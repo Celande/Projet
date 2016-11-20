@@ -1,6 +1,9 @@
 import javax.json.*;
 import javax.json.stream.*;
 
+/* Mise en place di document */
+// Ne sera jamais utilisé tel quel => Abstract
+
 abstract class Document
 {
 	protected String code;
@@ -19,45 +22,18 @@ abstract class Document
 
 	public Document()
 	{
+		this.code = "";
+		this.titre = "";
+		this.auteur = "";
+		this.annee = "";
 
+		this.loc = new Localisation();
+		this.genre = Genre.HORREUR;
 	}
 
-/*
-	public Document(String code, String titre, String auteur, String annee, Localisation loc, Genre genre)
+	public String getCode()
 	{
-		this.code = code;
-		this.titre = titre;
-		this.auteur = auteur;
-		this.annee = annee;
-
-		this.loc = loc;
-		this.genre = genre;
-	}
-	*/
-
-	public JsonObject write() // done to be override
-	{
-		return Json.createObjectBuilder().build();
-	}
-
-	public JsonObjectBuilder writeBuilder() // done to be override
-	{
-		return Json.createObjectBuilder();
-	}
-
-	public void read(JsonParser parser) // done to be override
-	{
-
-	}
-
-	public Boolean fromStringToBool(String s)
-	{
-		if(s.equals("true"))
-		{
-			return true;
-		}
-
-		return false;
+		return this.code;
 	}
 
 	public Localisation getLoc()
@@ -73,5 +49,52 @@ abstract class Document
 	public String getTitre()
 	{
 		return titre;
+	}
+
+	public String getAuteur()
+	{
+		return auteur;
+	}
+
+	public int getNbEmprunts()
+	{
+		return this.nbEmprunts;
+	}
+
+	// Renvoit les données pour un tableau
+	// Fait pour être surchargé par les classes filles
+	public Object[] getTable()
+	{
+		Object[] tab = {this.code, this.titre, this.auteur, this.annee, this.emprunte, this.nbEmprunts, this.genre};
+		return tab;
+	}
+
+	public String toString()
+	{
+		return "Document : " + titre + " de " + auteur;
+	}
+
+	public Boolean fromStringToBool(String s)
+	{
+		if(s.equals("true"))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	// Renvoit un objet décrivant les attributs du document
+	// Fait pour être surchargé par les classes filles
+	public JsonObject write()
+	{
+		return Json.createObjectBuilder().build();
+	}
+
+	// Lit les attributs du document
+	// Fait pour être surchargé par les classes filles
+	public void read(JsonParser parser)
+	{
+
 	}
 };

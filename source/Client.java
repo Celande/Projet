@@ -5,25 +5,11 @@ import java.lang.*;
 import java.io.*;
 import java.awt.event.*;
 import java.text.*;
-/*
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.ParseException;
-import org.json.simple.parser.JSONParser;
-*/
-
-/*
-import javax.json.Json;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import java.io.StringWriter;
-import javax.json.JsonWriter;
-*/
 
 import javax.json.*;
 import javax.json.stream.*;
 
-public class Client implements ActionListener
+public class Client
 {
 	private CategorieClient categorie;
 	private String nom;
@@ -36,81 +22,39 @@ public class Client implements ActionListener
 	private int nbEmpruntsEnCours; // 3 max
 	private int codeReduction;
 
-	public SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/y");
+	private String matricule;
 
-	JDialog frame;
-	JTextField nomTextField;
-	JTextField prenomTextField;
-	JTextField adresseTextField;
-	JComboBox categorieCombo;
-	Boolean closeFrame = false;
+	public SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/y");
 
 	public Client()
 	{
-		/*
+		this.categorie = CategorieClient.PARTICULIER; // Par défaut
+		this.nom = "";
+		this.prenom = "";
+		this.adresse = "";
+
+		Calendar calendar = Calendar.getInstance();
+		this.dateInscription = new Date();
+		this.dateInscription = calendar.getTime();
+		this.dateRenouvellement = new Date();
+		//calendar.add(Calendar.YEAR, 1);
+		this.dateRenouvellement = calendar.getTime();
+
 		this.nbEmpruntsEffectues = 0;
 		this.nbEmpruntsDepasses = 0;
 		this.nbEmpruntsEnCours = 0;
 		this.codeReduction = 0;
 
-		Scanner scan = new Scanner(System.in);
-		System.out.print("Nom : ");
-		this.nom = new String(scan.next());
+		this.matricule = "";
 
-		scan.nextLine();
-		System.out.print("Prénom : ");
-		this.prenom = new String(scan.next());
+	}
 
-		scan.nextLine();
-		System.out.print("Adresse : ");
-		this.adresse = new String(scan.nextLine());
-
-		Calendar calendar = Calendar.getInstance();
-		this.dateInscription = new Date();
-		this.dateInscription = calendar.getTime();// calendar : date d'aujurd'hui
-		this.dateRenouvellement = new Date();
-		this.dateRenouvellement = this.dateInscription;
-
-		//scan.nextLine();
-		System.out.println("A quelle catégorie appartient le client ?");
-		int count = 0;
-		for(CategorieClient c : CategorieClient.values()) // chaque element de CategorieClient
-		{
-			System.out.println(c.ordinal() + ". " + c);
-			count ++;
-		}
-
-		int choice = -1;
-		do
-		{
-			try
-			{
-				System.out.print("Entrez le nombre correspondant : ");
-				choice = scan.nextInt();
-			}
-			catch(Exception e)
-			{
-				System.out.println("Veuillez enter un nombre.");
-				scan.nextLine();
-				choice = -1;
-			}
-
-		}while(choice<0 || choice>count); // Vérifier que choice est entre 0 et max enum
-
-		for(CategorieClient c : CategorieClient.values()) // chaque element de CategorieClient
-		{
-			if(c.ordinal() == choice)
-			{
-				this.categorie = c;
-				break;
-			}
-		}
-		*/
-
-		categorie = CategorieClient.PARTICULIER;
-		nom = "";
-		prenom = "";
-		adresse = "";
+	Client(CategorieClient cat, String nom, String prenom, String adresse, int[] nbClient)
+	{
+		this.categorie = cat;
+		this.nom = firstUpperCase(nom);
+		this.prenom = firstUpperCase(prenom);
+		this.adresse = firstUpperCase(adresse);
 
 		Calendar calendar = Calendar.getInstance();
 		this.dateInscription = new Date();
@@ -123,79 +67,20 @@ public class Client implements ActionListener
 		this.nbEmpruntsEnCours = 0;
 		this.codeReduction = 0;
 
+		// matricule = "deux 1ere lettre de la catégorie" + "nombre de clients actuellement dans cettes catégorie + 1"
+		nbClient[categorie.ordinal()] = nbClient[categorie.ordinal()] + 1;
+		this.matricule = categorie.name().substring(0,2) + Integer.toString(nbClient[categorie.ordinal()]);
+
+		System.out.println("Client (cat ...) - matricule = " + matricule);
 	}
-
-	Client(Boolean lol)
+	
+	// Génération de clients pour les tests
+	Client(String x)
 	{
-		this.nbEmpruntsEffectues = 0;
-		this.nbEmpruntsDepasses = 0;
-		this.nbEmpruntsEnCours = 0;
-		this.codeReduction = 0;
-
-		//frame = new JDialog("Nouveau client");
-		frame = new JDialog();
-		frame.setTitle("Nouveau Client");
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-		JLabel labNom = new JLabel("Nom : ");
-		nomTextField = new JTextField(20);
-		JPanel p1 = new JPanel();
-		p1.setLayout(new BoxLayout(p1, BoxLayout.LINE_AXIS));
-		p1.add(labNom);
-		p1.add(nomTextField);
-		
-		JLabel labPrenom = new JLabel("Prenom : ");
-		prenomTextField = new JTextField(20);
-		JPanel p2 = new JPanel();
-		p2.setLayout(new BoxLayout(p2, BoxLayout.LINE_AXIS));
-		p2.add(labPrenom);
-		p2.add(prenomTextField);
-
-		JLabel labAdresse = new JLabel("Adresse : ");
-		adresseTextField = new JTextField(20);
-		JPanel p3 = new JPanel();
-		p3.setLayout(new BoxLayout(p3, BoxLayout.LINE_AXIS));
-		p3.add(labAdresse);
-		p3.add(adresseTextField);
-
-		JLabel labCombo = new JLabel("Catégorie : ");
-		categorieCombo = new JComboBox();
-		categorieCombo.setPreferredSize(new Dimension(100, 20));
-		for(CategorieClient c : CategorieClient.values())
-		{
-			categorieCombo.addItem(c.getNom());
-		}
-		JPanel p4 = new JPanel();
-		p4.setLayout(new BoxLayout(p4, BoxLayout.LINE_AXIS));
-		p4.add(labCombo);
-		p4.add(categorieCombo);
-
-		JButton okButton = new JButton("OK");
-		okButton.setActionCommand("ok");
-		okButton.addActionListener(this);
-		frame.getRootPane().setDefaultButton(okButton);
-
-		panel.add(p1);
-		panel.add(p2);
-		panel.add(p3);
-		panel.add(p4);
-		panel.add(okButton);
-
-		frame.add(panel);
-
-		frame.setMinimumSize(new Dimension(300, 300));
-		frame.pack();
-		frame.setModal(true);
-		frame.setVisible(true);
-	}
-
-	Client(String x) // Generation de client pour les tests
-	{
-		categorie = CategorieClient.PARTICULIER;
-		nom = x;
-		prenom = x;
-		adresse = x;
+		this.categorie = CategorieClient.PARTICULIER;
+		this.nom = x;
+		this.prenom = x;
+		this.adresse = x;
 
 		Calendar calendar = Calendar.getInstance();
 		this.dateInscription = new Date();
@@ -207,53 +92,20 @@ public class Client implements ActionListener
 		this.nbEmpruntsDepasses = 0;
 		this.nbEmpruntsEnCours = 0;
 		this.codeReduction = 0;
+
+		// Matricule aléatoire
+
+		int n = (int) (1 + (Math.random() * (10000 - 1)));
+
+		this.matricule = categorie.name().substring(0,2) + Integer.toString(n);
+		System.out.println("Client (String) - matricule = " + this.matricule);
 	}
 
-	public void actionPerformed(ActionEvent e) 
+	public CategorieClient getCategorie()
 	{
-		if(e.getActionCommand().equals("ok"))
-		{
-			this.nom = new String(nomTextField.getText());
-			this.prenom = new String(prenomTextField.getText());
-			this.adresse = new String(adresseTextField.getText());
-
-			this.categorie = CategorieClient.ETUDIANT;
-			this.categorie.setCategorie(categorieCombo.getSelectedItem().toString());
-
-			Calendar calendar = Calendar.getInstance();
-			this.dateInscription = new Date();
-			this.dateInscription = calendar.getTime();
-			this.dateRenouvellement = new Date();
-			this.dateRenouvellement = this.dateInscription;
-
-			frame.setVisible(false);
-			frame.dispose();
-		}
+		return this.categorie;
 	}
-
-	public void keyPressed(KeyEvent e) 
-	{
-		if (e.getKeyCode()==KeyEvent.VK_ENTER)
-		{
-			this.nom = new String(nomTextField.getText());
-			this.prenom = new String(prenomTextField.getText());
-			this.adresse = new String(adresseTextField.getText());
-
-			this.categorie = CategorieClient.ETUDIANT;
-			this.categorie.setCategorie(categorieCombo.getSelectedItem().toString());
-
-			Calendar calendar = Calendar.getInstance();
-			this.dateInscription = new Date();
-			this.dateInscription = calendar.getTime();
-			this.dateRenouvellement = new Date();
-			this.dateRenouvellement = this.dateInscription;
-
-			frame.setVisible(false);
-			frame.dispose();
-		}
-
-	}
-
+	
 	public String getNom()
 	{
 		return this.nom;
@@ -274,78 +126,106 @@ public class Client implements ActionListener
 		return this.categorie.getNom();
 	}
 
-	public CategorieClient getCat()
+	public String getMatricule()
 	{
-		return categorie;
+		return this.matricule;
 	}
 
-	public String toString()
-	{
-		return "Client : " + nom.toUpperCase() + " " + prenom + "\nAdresse : " + adresse + "\nCategorie : " + categorie.getNom() + "\nDate d'inscription : " + dateFormat.format(dateInscription);
-	}
-
+	// Renvoit les données pour un tableau
 	public Object[] getTable()
 	{
-		Object[] tab = {categorie, nom, prenom, adresse, dateFormat.format(dateInscription), dateFormat.format(dateRenouvellement), nbEmpruntsEffectues, nbEmpruntsEffectues, nbEmpruntsEnCours, codeReduction};
+		Object[] tab = {this.categorie, this.nom, this.prenom, this.adresse, dateFormat.format(this.dateInscription), dateFormat.format(this.dateRenouvellement), this.nbEmpruntsEffectues, this.nbEmpruntsEffectues, this.nbEmpruntsEnCours, this.codeReduction};
 
 		return tab;
 	}
 
+	public String toString()
+	{
+		return "Client : " + this.nom.toUpperCase() + " " + this.prenom + "\nAdresse : " + this.adresse + "\nCategorie : " + this.categorie.getNom() + "\nDate d'inscription : " + dateFormat.format(this.dateInscription);
+	}
+
+	public String firstUpperCase(String s)
+	{
+		StringBuilder str = new StringBuilder();
+		if(!s.isEmpty())
+		{
+			str.append(Character.toUpperCase(s.charAt(0)));
+			for(int i=1; i<s.length(); i++)
+			{
+				if(s.charAt(i-1) == ' ' || s.charAt(i-1) == '-' || s.charAt(i-1) == '\'')
+				{
+					str.append(Character.toUpperCase(s.charAt(i)));
+				}
+				else
+				{
+					str.append(Character.toLowerCase(s.charAt(i)));
+				}
+			}
+		}
+		return str.toString();
+	}
+
+	public void addEmpruntDepasse()
+	{
+		this.nbEmpruntsDepasses ++;
+	}
+
+	// Nécessité de se réinscrire
+	public Boolean haveToRenew()
+	{
+		Calendar calendar = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(this.dateRenouvellement);
+		cal.add(Calendar.YEAR, 1); // date de renouvellement + 1 an
+		// Si le renouvellement date de plsu d'un an
+		if(calendar.getTime().equals(cal.getTime()) || calendar.getTime().after(cal.getTime()))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	// Réinscription
+	public void reinscription()
+	{
+		Calendar cal = Calendar.getInstance();
+		this.dateRenouvellement = cal.getTime(); // mise à jour de la date de renouvellement
+	}
+
+	// Supression du client
+	public Boolean delete()
+	{
+		Calendar now = Calendar.getInstance();
+		Calendar max = Calendar.getInstance();
+		max.setTime(this.dateRenouvellement);
+		max.add(Calendar.YEAR, 1);
+		max.add(Calendar.MONTH, 3); // On a 3 mois pour se réinscrire
+
+		// Si on ne se réinscrit pas dans les 3 mois
+		if(now.getTime().equals(max.getTime()) || now.getTime().after(max.getTime()))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	// Renvoit un objet décrivant les attributs du client
 	public JsonObject write()
 	{
-		/*
-		JSONObject obj = new JSONObject();
-
-		try
-		{
-			obj.put("categorie", categorie.getNom());
-			obj.put("nom", nom);
-			obj.put("prenom", prenom);
-			obj.put("adresse", adresse);
-			obj.put("date_inscription", dateFormat.format(dateInscription));
-			obj.put("date_renouvellement", dateFormat.format(dateRenouvellement));
-			obj.put("nb_effectues", new Integer(nbEmpruntsEffectues));
-			obj.put("nb_depasses", new Integer(nbEmpruntsDepasses));
-			obj.put("nb_encours", new Integer(nbEmpruntsEnCours));
-			obj.put("code", new Integer(codeReduction));
-
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-
-			return obj;
-
-			//String jsonText = out.toString();
-			//System.out.println(jsonText);
-		}
-		catch(Exception e)
-		{
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		}
-
-		return obj;
-		*/
-
 		JsonObject obj = Json.createObjectBuilder()
-			.add("categorie", categorie.toString())
-		   .add("nom", nom)
-		   .add("prenom", prenom)
-		   .add("adresse", adresse)
-		   .add("dateInscription", dateFormat.format(dateInscription))
-		   .add("dateRenouvellement", dateFormat.format(dateRenouvellement))
-		   .add("nbEmpruntsEffectues", nbEmpruntsEffectues)
-		   .add("nbEmpruntsDepasses", nbEmpruntsDepasses)
-		   .add("nbEmpruntsEnCours", nbEmpruntsEnCours)
-		   .add("codeReduction", codeReduction)
-		   /*
-		   .add("phoneNumbers", Json.createArrayBuilder()
-		      .add(Json.createObjectBuilder()
-		         .add("type", "mobile")
-		         .add("number", "111-111-1111"))
-		      .add(Json.createObjectBuilder()
-		         .add("type", "home")
-		         .add("number", "222-222-2222")))
-		         */
+			.add("categorie", this.categorie.writeBuilder())
+		   .add("nom", this.nom)
+		   .add("prenom", this.prenom)
+		   .add("adresse", this.adresse)
+		   .add("dateInscription", dateFormat.format(this.dateInscription))
+		   .add("dateRenouvellement", dateFormat.format(this.dateRenouvellement))
+		   .add("nbEmpruntsEffectues", this.nbEmpruntsEffectues)
+		   .add("nbEmpruntsDepasses", this.nbEmpruntsDepasses)
+		   .add("nbEmpruntsEnCours", this.nbEmpruntsEnCours)
+		   .add("codeReduction", this.codeReduction)
+		   .add("matricule", this.matricule)
 		   .build()
 		         ;
 
@@ -353,68 +233,7 @@ public class Client implements ActionListener
 
 	}
 
-	public JsonObjectBuilder writeBuilder()
-	{
-		/*
-		JSONObject obj = new JSONObject();
-
-		try
-		{
-			obj.put("categorie", categorie.getNom());
-			obj.put("nom", nom);
-			obj.put("prenom", prenom);
-			obj.put("adresse", adresse);
-			obj.put("date_inscription", dateFormat.format(dateInscription));
-			obj.put("date_renouvellement", dateFormat.format(dateRenouvellement));
-			obj.put("nb_effectues", new Integer(nbEmpruntsEffectues));
-			obj.put("nb_depasses", new Integer(nbEmpruntsDepasses));
-			obj.put("nb_encours", new Integer(nbEmpruntsEnCours));
-			obj.put("code", new Integer(codeReduction));
-
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-
-			return obj;
-
-			//String jsonText = out.toString();
-			//System.out.println(jsonText);
-		}
-		catch(Exception e)
-		{
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		}
-
-		return obj;
-		*/
-
-		JsonObjectBuilder obj = Json.createObjectBuilder()
-			.add("categorie", categorie.toString())
-		   .add("nom", nom)
-		   .add("prenom", prenom)
-		   .add("adresse", adresse)
-		   .add("dateInscription", dateFormat.format(dateInscription))
-		   .add("dateRenouvellement", dateFormat.format(dateRenouvellement))
-		   .add("nbEmpruntsEffectues", nbEmpruntsEffectues)
-		   .add("nbEmpruntsDepasses", nbEmpruntsDepasses)
-		   .add("nbEmpruntsEnCours", nbEmpruntsEnCours)
-		   .add("codeReduction", codeReduction)
-		   /*
-		   .add("phoneNumbers", Json.createArrayBuilder()
-		      .add(Json.createObjectBuilder()
-		         .add("type", "mobile")
-		         .add("number", "111-111-1111"))
-		      .add(Json.createObjectBuilder()
-		         .add("type", "home")
-		         .add("number", "222-222-2222")))
-		         */
-		   //.build()
-		         ;
-
-	   return obj;
-
-	}
-
+	// Lit les attributs du client
 	public void read(JsonParser parser)
 	{
 		try{
@@ -430,75 +249,68 @@ public class Client implements ActionListener
 			      case VALUE_FALSE:
 			      case VALUE_NULL:
 			      case VALUE_TRUE:
-			         //System.out.println(event.toString());
 			         break;
 			      case KEY_NAME:
 			      	if(parser.getString().equals("categorie"))
 			      	{
 			      		parser.next();
-			      		categorie.setCategorie(parser.getString());
+			      		this.categorie = this.categorie.read(parser);
 			      	}
 			      	else if(parser.getString().equals("nom"))
 			      	{
 			      		parser.next();
-			      		nom = parser.getString();
+			      		this.nom = firstUpperCase(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("prenom"))
 			      	{
 			      		parser.next();
-			      		prenom = parser.getString();
+			      		this.prenom = firstUpperCase(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("adresse"))
 			      	{
 			      		parser.next();
-			      		adresse = parser.getString();
+			      		this.adresse = firstUpperCase(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("dateInscription"))
 			      	{
 			      		parser.next();
-			      		dateInscription = dateFormat.parse(parser.getString());
+			      		this.dateInscription = dateFormat.parse(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("dateRenouvellement"))
 			      	{
 			      		parser.next();
-			      		dateRenouvellement = dateFormat.parse(parser.getString());
+			      		this.dateRenouvellement = dateFormat.parse(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("nbEmpruntsEffectues"))
 			      	{
 			      		parser.next();
-			      		nbEmpruntsEffectues = parser.getInt();
+			      		this.nbEmpruntsEffectues = parser.getInt();
 			      	}
 			      	else if(parser.getString().equals("nbEmpruntsDepasses"))
 			      	{
 			      		parser.next();
-			      		nbEmpruntsDepasses = parser.getInt();
+			      		this.nbEmpruntsDepasses = parser.getInt();
 			      	}
 			      	else if(parser.getString().equals("nbEmpruntsEnCours"))
 			      	{
 			      		parser.next();
-			      		nbEmpruntsEnCours = parser.getInt();
+			      		this.nbEmpruntsEnCours = parser.getInt();
 			      	}
 			      	else if(parser.getString().equals("codeReduction"))
 			      	{
 			      		parser.next();
-			      		codeReduction = parser.getInt();
+			      		this.codeReduction = parser.getInt();
+			      	}
+			      	else if(parser.getString().equals("matricule"))
+			      	{
+			      		parser.next();
+			      		this.matricule = parser.getString();
 			      	}
 			      	else
 			      	{
 			      		// error
 			      	}
-			         /*
-			         System.out.print(event.toString() + " " +
-			                          parser.getString() + " - ");
-			                          */
 			         break;
-			         /*
-			      case VALUE_STRING:
-			      case VALUE_NUMBER:
-			         System.out.println(event.toString() + " " +
-			                            parser.getString());
-			         break;
-			         */
 			         default:
 			         break;
 			   }
@@ -511,42 +323,4 @@ public class Client implements ActionListener
 			System.exit(-1);
 		}
 	}
-
-/*
-	public void read(JSONObject obj)
-	{
-		JSONParser parser = new JSONParser();
-
-		try 
-		{
-			
-			Object obj = parser.parse(new FileReader("c:\\test.json"));
-
-			JSONObject jsonObject = (JSONObject) obj;
-
-			String name = (String) jsonObject.get("name");
-			System.out.println(name);
-
-			long age = (Long) jsonObject.get("age");
-			System.out.println(age);
-
-			// loop array
-			JSONArray msg = (JSONArray) jsonObject.get("messages");
-			Iterator<String> iterator = msg.iterator();
-			while (iterator.hasNext()) {
-				System.out.println(iterator.next());
-				
-
-			this.nom = obj.get("nom");
-			}
-
-			this.nom = (String) obj.get("nom");
-
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-	}
-	*/
 };

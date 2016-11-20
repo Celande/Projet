@@ -1,51 +1,66 @@
 import javax.json.*;
 import javax.json.stream.*;
 
+/* Mise en place de la localisation d'un document */
+
 public class Localisation
 {
 	private String salle;
 	private String rayon;
+
+	public Localisation()
+	{
+		this.salle = "";
+		this.rayon = "";
+	}
 
 	public Localisation(String salle, String rayon)
 	{
 		this.salle = salle;
 		this.rayon = rayon;
 	}
-	/*	
+		
 
 	public String getSalle()
 	{
-		return salle;
+		return this.salle;
 	}
 
 	public String getRayon()
 	{
-		return rayon;
+		return this.rayon;
 	}
-	*/
+	
 
+	public String toString()
+	{
+		return "salle : " + this.salle + " rayon : " + this.rayon;
+	}
+
+	// Permet d'écrire la localisation en tant qu'objet d'un autre objet
 	public JsonObjectBuilder writeBuilder()
 	{
 		JsonObjectBuilder obj = Json.createObjectBuilder()
-			.add("salle", salle)
-		   .add("rayon", rayon)
-		   //.build();
+			.add("salle", this.salle)
+		   .add("rayon", this.rayon)
 		   ;
 
 	   return obj;
 	}
 
+	// Permet d'écrire la localisation
 	public JsonObject write()
 	{
 		JsonObject obj = Json.createObjectBuilder()
-			.add("salle", salle)
-		   .add("rayon", rayon)
+			.add("salle", this.salle)
+		   .add("rayon", this.rayon)
 		   .build();
 		   ;
 
 	   return obj;
 	}
 
+	// Lit les attributs de la localisation
 	public void read(JsonParser parser)
 	{
 		try{
@@ -66,12 +81,12 @@ public class Localisation
 			      	if(parser.getString().equals("salle"))
 			      	{
 			      		parser.next();
-			      		salle = parser.getString();
+			      		this.salle = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("rayon"))
 			      	{
 			      		parser.next();
-			      		rayon = parser.getString();
+			      		this.rayon = parser.getString();
 			      	}
 			      	else
 			      	{

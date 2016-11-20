@@ -1,10 +1,13 @@
 import javax.json.*;
 import javax.json.stream.*;
 
+/* Mise en place du genre d'un document */
+// Nombre limité de genre => Enum
+
 public enum Genre
 {
 	// Donner tous les genres possibles
-	FANTASTIQUE("Fantastique"), HORREUR("Frisson & Tereur"), JEUNESSE("Jeunesse"), HISTORIQUE("Historique"), ROMANTIQUE("Romantique"), POLICIER("Policier"), SF("Science-Ficion"), THRILLER("Thriller");
+	AUTRE("Autre"), FANTASTIQUE("Fantastique"), HORREUR("Frisson & Tereur"), JEUNESSE("Jeunesse"), HISTORIQUE("Historique"), ROMANTIQUE("Romantique"), POLICIER("Policier"), SF("Science-Ficion"), THRILLER("Thriller");
 
 	private String nom;
 	private int nbEmprunts;
@@ -15,26 +18,68 @@ public enum Genre
 		this.nbEmprunts = 0;
 	}
 
-	Genre(String nom, int nbEmprunts)
+	// Renvoie le genre en fonction de l'id de l'énumération et modifie le nbEmprunts
+	Genre setGenre(int ordinal, int nb)
 	{
-		this.nom = nom;
-		this.nbEmprunts = nbEmprunts;
+		Genre ge = AUTRE;
+		for(Genre g : Genre.values())
+		{
+			if(ordinal == g.ordinal())
+			{
+				ge = g;
+				break;
+			}
+		}
+
+		
+		ge.setnbEmprunts(nb);
+
+		return ge;
 	}
 
+	public void setnbEmprunts(int n)
+	{
+		this.nbEmprunts = n;
+	}
+
+	public String getNom()
+	{
+		return this.nom;
+	}
+
+	public String toString()
+	{
+		return this.nom;
+	}
+
+	// Permet d'écrire le genre en tant qu'objet d'un autre objet
 	public JsonObjectBuilder writeBuilder()
 	{
 		JsonObjectBuilder obj = Json.createObjectBuilder()
-			.add("nom", nom)
-		   //.add("nbEmprunts", nbEmprunts)
-		   //.build();
+			.add("ordinal", this.ordinal())
+		    //.add("nbEmprunts", this.nbEmprunts)
 		   ;
 
 	   return obj;
 	}
 
-	public void read(JsonParser parser)
+	// Ajout d'emprunts
+	public void addEmprunts(int n)
 	{
+		this.nbEmprunts += n;
+	}
+
+	// Renvoie le genre après lecture
+	public Genre read(JsonParser parser)
+	{
+		int ordinal = 0;
+		int nb = 0;
+
+		int count = 0;
+
 		try{
+			
+
 			while (parser.hasNext()) 
 			{
 			   JsonParser.Event event = parser.next();
@@ -49,16 +94,22 @@ public enum Genre
 			      case VALUE_TRUE:
 			         break;
 			      case KEY_NAME:
-			      	if(parser.getString().equals("nom"))
+			      	if(parser.getString().equals("ordinal"))
 			      	{
 			      		parser.next();
-			      		nom = parser.getString();
+			      		ordinal = parser.getInt();
+
+			      		count ++;
 			      	}
+			      	/*
 			      	else if(parser.getString().equals("nbEmprunts"))
 			      	{
 			      		parser.next();
-			      		nbEmprunts = parser.getInt();
+			      		nb = parser.getInt();
+
+			      		count ++;
 			      	}
+			      	*/
 			      	else
 			      	{
 			      		// error
@@ -68,7 +119,14 @@ public enum Genre
 			         default:
 			         break;
 			   }
+
+			   if(count >= 1)
+			   {
+			   		break;
+			   }
 			}
+
+			return setGenre(ordinal, nb);
 	
 		}
 		catch(Exception e)
@@ -76,26 +134,7 @@ public enum Genre
 			System.err.println(e);
 			System.exit(-1);
 		}
+
+		return setGenre(ordinal, nb);
 	}
 };
-
-/*
-Romans & Fictions
-	Aventure & Action
-Classiques
-Erotique
-Espionnage
-Fantastique
-Frisson & Terreur 	Guerre
-Jeunesse
-Historique
-Littérature sentimentale
-Policier
-Régional/Terroir 	Roman
-Science-Fiction
-Nouvelles
-Anthologies
-Fantasy
-Thriller
-Western
-*/

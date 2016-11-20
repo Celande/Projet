@@ -19,70 +19,158 @@ public class FicheEmprunt
 	public Boolean depasse; //
 	public double tarif;	//
 
-	private Client client;
-	private Document doc;
+	private String codeClient;
+	private String codeDoc;
+	private double docTarif;
 
-	public SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/y");
+	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/y");
 
-	public FicheEmprunt(Client c, Document d)
+	public FicheEmprunt (Client c, Document d)
 	{
 		Calendar cal = Calendar.getInstance();
 
-		dateEmprunt = new Date();
-		dateEmprunt = cal.getTime();
+		this.dateEmprunt = new Date();
+		this.dateEmprunt = cal.getTime(); // "aujourd'hui"
 
-		dateRappel = new Date();
-        cal.setTime(dateEmprunt);
-        cal.add(Calendar.DATE, doc.DUREE-1);
-		dateRappel = cal.getTime();
+		this.dateLimite = new Date();
+		cal.setTime(this.dateEmprunt);
+		cal.add(Calendar.DATE, d.DUREE); // date limite en fonction de la durée du document
+		this.dateLimite = cal.getTime();
 
-		dateLimite = new Date();
-		cal.setTime(dateRappel);
-		cal.add(Calendar.DATE, 1);
-		dateLimite = cal.getTime();
+		this.dateRappel = new Date();
+        cal.setTime(this.dateLimite);
+        cal.add(Calendar.DATE, -1); // rappel un jour avant la date limite
+		this.dateRappel = cal.getTime();
 
-		this.client = c;
-		this.doc = d;
+		this.codeClient = c.getMatricule();
+		this.codeDoc = d.getCode();
 
-		tarif = doc.TARIF;
+		this.tarif = d.TARIF;
+		this.docTarif = d.TARIF;
 
-		depasse = false;
+		this.depasse = false;
 	}
 
-	public void update()
+	public FicheEmprunt()
+	{
+		this.dateEmprunt = new Date();
+
+		this.dateRappel = new Date();
+
+		this.dateLimite = new Date();
+
+		this.codeDoc = "";
+		this.codeClient = "";
+
+		this.tarif = 0;
+		this.docTarif = 0;
+
+		this.depasse = false;
+	}
+
+	// Retourne le document en fonction d'une liste
+	public Document getDoc(ArrayList<Document> list)
+	{
+		for(Document d : list)
+		{
+			if(this.codeDoc.equals(d.getCode())) // Vérifie si le code du document correspond
+			{
+				return d;
+			}
+		}
+
+		// error
+		return null;
+	}
+
+	public String getCodeDoc()
+	{
+		return this.codeDoc;
+	}
+
+	// Retourne le client en fonction d'une liste
+	public Client getClient(ArrayList<Client> list)
+	{
+		for(Client c : list)
+		{
+			if(this.codeClient.equals(c.getMatricule())) // Vérifie si le matricule du client correspond
+			{
+				return c;
+			}
+		}
+
+		//error
+		return null;
+	}
+
+	public String toString()
+	{
+		return "Emprunt de " + this.codeDoc + " par " + this.codeClient;
+	}
+
+	public Boolean fromStringToBool(String s)
+	{
+		if(s.equals("true"))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	// Mise à jour de la fiche d'emprunt
+	// Renvoie si le dépassement date d'aujourd'hui ou non
+	public Boolean update()
 	{
 		Calendar cal = Calendar.getInstance();
+		Boolean justPassed = false; // Vérifie si le dépassement est le jour même ou non
 
-		if(cal.getTime().after(dateLimite))
+		if(!this.depasse) // Vérifie si il n'y a pas déjà dépassement
 		{
-			depasse = true;
-		}
-		else
-		{
-			depasse = false;
+			if(cal.getTime().after(dateLimite)) // Vérifie s'il y a  dépassement
+			{
+				this.depasse = true;
+				justPassed = true;
+			}
 		}
 
-		//tarif = doc.TARIF;
-		if(depasse)
+		if(this.depasse)
 		{
-			//tarif = tarif + (cal.getTime() - dateLimite.getTime())*doc.TARIF;
+			this.tarif = this.tarif + docTarif/2; // Augement le tarif dû
 		}
+
+		return justPassed;
 	}
 
+	// Nécessité d'envoyer un rappel
+	public Boolean giveRappel() // Verifier si c'est la date ou à la seconde pres
+	{
+		Calendar cal = Calendar.getInstance();
+		// Envoie un rappel chaque jour à partir de dateRappel
+		if(cal.getTime().equals(this.dateRappel) || cal.getTime().after(this.dateRappel))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	// Permet d'écrire la fiche
 	public JsonObject write()
 	{
 		JsonObject obj = Json.createObjectBuilder()
-			.add("dateEmprunt", dateFormat.format(dateEmprunt))
-			.add("dateLimite", dateFormat.format(dateLimite))
-			.add("dateRappel", dateFormat.format(dateRappel))
-		   .add("depasse", depasse)
-		   .add("tarif", String.valueOf(tarif))
-		   	.add("client", client.writeBuilder()) // JsonObjectBuilder
-		   	.add("doc", doc.writeBuilder()) // JsonObjectBuilder
+			.add("dateEmprunt", this.dateFormat.format(dateEmprunt))
+			.add("dateLimite", this.dateFormat.format(dateLimite))
+			.add("dateRappel", this.dateFormat.format(dateRappel))
+		   .add("depasse", this.depasse.toString())
+		   .add("tarif", String.valueOf(this.tarif))
+		   	.add("codeClient", this.codeClient)
+		   	.add("codeDoc", this.codeDoc)
 		   .build();
 	   return obj;
 	}
 
+	// Li les attributs de la fiche
 	public void read(JsonParser parser)
 	{
 		try{
@@ -98,58 +186,48 @@ public class FicheEmprunt
 			      case VALUE_FALSE:
 			      case VALUE_NULL:
 			      case VALUE_TRUE:
-			         //System.out.println(event.toString());
 			         break;
 			      case KEY_NAME:
 			      	if(parser.getString().equals("dateEmprunt"))
 			      	{
 			      		parser.next();
-			      		dateEmprunt = dateFormat.parse(parser.getString());
+			      		this.dateEmprunt = dateFormat.parse(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("dateLimite"))
 			      	{
 			      		parser.next();
-			      		dateLimite = dateFormat.parse(parser.getString());
+			      		this.dateLimite = dateFormat.parse(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("dateRappel"))
 			      	{
 			      		parser.next();
-			      		dateEmprunt = dateFormat.parse(parser.getString());
+			      		this.dateEmprunt = dateFormat.parse(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("depasse"))
 			      	{
 			      		parser.next();
-			      		depasse = fromStringToBool(parser.getString());
+			      		this.depasse = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("tarif"))
 			      	{
 			      		parser.next();
-			      		tarif = Double.parseDouble(parser.getString());
+			      		this.tarif = Double.parseDouble(parser.getString());
 			      	}
-			      	else if(parser.getString().equals("client"))
+			      	else if(parser.getString().equals("codeClient"))
 			      	{
-
+			      		parser.next();
+			      		this.codeClient = parser.getString();
 			      	}
-			      	else if(parser.getString().equals("doc"))
+			      	else if(parser.getString().equals("codeDoc"))
 			      	{
-
+			      		parser.next();
+			      		this.codeDoc = parser.getString();
 			      	}
 			      	else
 			      	{
 			      		// error
 			      	}
-			         /*
-			         System.out.print(event.toString() + " " +
-			                          parser.getString() + " - ");
-			                          */
 			         break;
-			         /*
-			      case VALUE_STRING:
-			      case VALUE_NUMBER:
-			         System.out.println(event.toString() + " " +
-			                            parser.getString());
-			         break;
-			         */
 			         default:
 			         break;
 			   }
@@ -161,15 +239,5 @@ public class FicheEmprunt
 			System.err.println(e);
 			System.exit(-1);
 		}
-	}
-
-	public Boolean fromStringToBool(String s)
-	{
-		if(s.equals("true"))
-		{
-			return true;
-		}
-
-		return false;
 	}
 };

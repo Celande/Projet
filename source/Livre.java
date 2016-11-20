@@ -4,8 +4,8 @@ import javax.json.stream.*;
 public class Livre extends Document
 {
 	private int nbPages;
-	public static int DUREE = 6*7;
-	public static double TARIF = 0.5;
+	public static final int DUREE = 6*7;
+	public static final double TARIF = 0.5;
 
 	public Livre(String code, String titre, String auteur, String annee, Localisation loc, Genre genre, int nbPages)
 	{
@@ -20,14 +20,17 @@ public class Livre extends Document
 		this.nbPages = nbPages;
 	}
 
-	public int getDuree()
+	public Livre()
 	{
-		return this.DUREE;
-	}
+		this.code = "";
+		this.titre = "";
+		this.auteur = "";
+		this.annee = "";
 
-	public double getTarif()
-	{
-		return this.TARIF;
+		this.loc = new Localisation();
+		this.genre = Genre.AUTRE; // Par défaut
+
+		this.nbPages = 0;
 	}
 
 	public int getNbPages()
@@ -35,48 +38,37 @@ public class Livre extends Document
 		return this.nbPages;
 	}
 
+	@Override
+	// Renvoit les données pour un tableau
+	public Object[] getTable()
+	{
+		Object[] tab = {this.code, this.titre, this.auteur, this.annee, this.emprunte,this. nbEmprunts, this.genre, this.nbPages};
+		return tab;
+	}
+
+	@Override
+	// Renvoit un objet décrivant les attributs du document
 	public JsonObject write()
 	{
 		JsonObject obj = Json.createObjectBuilder()
-			.add("code", code)
-		   .add("titre", titre)
-		   .add("auteur", auteur)
-		   .add("annee", annee)
-		   .add("empruntable", empruntable.toString())
-		   .add("emprunte", emprunte.toString())
-		   .add("nbEmprunts", nbEmprunts)
-		   .add("nbPages", nbPages)
-		   // localisation
-		   .add("loc", loc.writeBuilder())
-		   // genre
-		   .add("genre", genre.writeBuilder())
+			.add("code", this.code)
+		   .add("titre", this.titre)
+		   .add("auteur", this.auteur)
+		   .add("annee", this.annee)
+		   .add("empruntable", this.empruntable.toString())
+		   .add("emprunte", this.emprunte.toString())
+		   .add("nbEmprunts", this.nbEmprunts)
+		   .add("nbPages", this.nbPages)
+		   .add("loc", this.loc.writeBuilder())
+		   .add("genre", this.genre.writeBuilder())
 		   .build()
 		   ;
 
 	   return obj;
 	}
 
-	public JsonObjectBuilder writeBuilder()
-	{
-		JsonObjectBuilder obj = Json.createObjectBuilder()
-			.add("code", code)
-		   .add("titre", titre)
-		   .add("auteur", auteur)
-		   .add("annee", annee)
-		   .add("empruntable", empruntable.toString())
-		   .add("emprunte", emprunte.toString())
-		   .add("nbEmprunts", nbEmprunts)
-		   .add("nbPages", nbPages)
-		   // localisation
-		   .add("loc", loc.writeBuilder())
-		   // genre
-		   .add("genre", genre.writeBuilder())
-		   //.build()
-		   ;
-
-	   return obj;
-	}
-
+	@Override
+	// Lit les attributs du document
 	public void read(JsonParser parser)
 	{
 		try{
@@ -97,54 +89,52 @@ public class Livre extends Document
 			      	if(parser.getString().equals("code"))
 			      	{
 			      		parser.next();
-			      		code = parser.getString();
+			      		this.code = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("titre"))
 			      	{
 			      		parser.next();
-			      		titre = parser.getString();
+			      		this.titre = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("auteur"))
 			      	{
 			      		parser.next();
-			      		auteur = parser.getString();
+			      		this.auteur = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("annee"))
 			      	{
 			      		parser.next();
-			      		annee = parser.getString();
+			      		this.annee = parser.getString();
 			      	}
 			      	else if(parser.getString().equals("empruntable"))
 			      	{
 			      		parser.next();
-			      		empruntable = fromStringToBool(parser.getString());
+			      		this.empruntable = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("emprunte"))
 			      	{
 			      		parser.next();
-			      		emprunte = fromStringToBool(parser.getString());
+			      		this.emprunte = fromStringToBool(parser.getString());
 			      	}
 			      	else if(parser.getString().equals("nbEmprunts"))
 			      	{
 			      		parser.next();
-			      		nbEmprunts = parser.getInt();
-			      	}
-			      	// localisation
-			      	else if(parser.getString().equals("loc"))
-			      	{
-			      		parser.next();
-			      		loc.read(parser);
-			      	}
-			      	// genre
-			      	else if(parser.getString().equals("genre"))
-			      	{
-			      		parser.next();
-			      		genre.read(parser);
+			      		this.nbEmprunts = parser.getInt();
 			      	}
 			      	else if(parser.getString().equals("nbPages"))
 			      	{
 			      		parser.next();
-			      		nbPages = parser.getInt();
+			      		this.nbPages = parser.getInt();
+			      	}
+			      	else if(parser.getString().equals("loc"))
+			      	{
+			      		parser.next();
+			      		this.loc.read(parser);
+			      	}
+			      	else if(parser.getString().equals("genre"))
+			      	{
+			      		parser.next();
+			      		this.genre = genre.read(parser);
 			      	}
 			      	else
 			      	{
