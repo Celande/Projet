@@ -10,15 +10,15 @@ abstract class Document
 	protected String titre;
 	protected String auteur;
 	protected String annee;
-	protected Boolean empruntable = false;
+	protected Boolean empruntable = true;
 	public Boolean emprunte = false; //
 	protected int nbEmprunts = 0;
 
 	protected Localisation loc;
 	protected Genre genre;
 
-	public static int DUREE;
-	public static double TARIF;
+	public int DUREE;
+	public double TARIF;
 
 	public Document()
 	{
@@ -56,6 +56,11 @@ abstract class Document
 		return auteur;
 	}
 
+	public String getAnnee()
+	{
+		return this.annee;
+	}
+
 	public int getNbEmprunts()
 	{
 		return this.nbEmprunts;
@@ -71,7 +76,20 @@ abstract class Document
 
 	public String toString()
 	{
-		return "Document : " + titre + " de " + auteur;
+		return this.titre;
+	}
+
+	public void addEmprunt()
+	{
+		this.empruntable = false;
+		this.emprunte = true;
+		this.nbEmprunts ++;
+	}
+
+	public void rmEmprunt()
+	{
+		this.empruntable = true;
+		this.emprunte = false;
 	}
 
 	public Boolean fromStringToBool(String s)
@@ -93,7 +111,7 @@ abstract class Document
 
 	// Lit les attributs du document
 	// Fait pour être surchargé par les classes filles
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
 
 	}

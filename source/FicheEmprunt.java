@@ -45,12 +45,12 @@ public class FicheEmprunt
         cal.add(Calendar.DATE, -1); // rappel un jour avant la date limite
 		this.dateRappel = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
 
-	}
-	catch(Exception e)
-	{
-		System.err.println(e.getMessage());
-		System.exit(-1);
-	}
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
 		
 		this.codeClient = c.getMatricule();
 		this.codeDoc = d.getCode();
@@ -81,11 +81,11 @@ public class FicheEmprunt
 	// Retourne le document en fonction d'une liste
 	public Document getDoc(ArrayList<Document> list)
 	{
-		for(Document d : list)
+		for(int i=0; i<list.size() ; i++)
 		{
-			if(this.codeDoc.equals(d.getCode())) // Vérifie si le code du document correspond
+			if(this.codeDoc.equals(list.get(i).getCode())) // Vérifie si le code du document correspond
 			{
-				return d;
+				return list.get(i);
 			}
 		}
 
@@ -101,11 +101,11 @@ public class FicheEmprunt
 	// Retourne le client en fonction d'une liste
 	public Client getClient(ArrayList<Client> list)
 	{
-		for(Client c : list)
+		for(int i=0; i<list.size() ; i++)
 		{
-			if(this.codeClient.equals(c.getMatricule())) // Vérifie si le matricule du client correspond
+			if(this.codeClient.equals(list.get(i).getMatricule())) // Vérifie si le matricule du client correspond
 			{
-				return c;
+				return list.get(i);
 			}
 		}
 
@@ -113,11 +113,18 @@ public class FicheEmprunt
 		return null;
 	}
 
+	public Object[] getTable(ArrayList<Document> docList, ArrayList<Client> clientList)
+	{
+		Object[] tab = {getDoc(docList), getClient(clientList), dateFormat.format(this.dateEmprunt), dateFormat.format(this.dateLimite), this.depasse, this.tarif};
+		return tab;
+	}
+
 	public String toString()
 	{
 		return "Emprunt de " + this.codeDoc + " par " + this.codeClient;
 	}
 
+	// Convertie String en boolean
 	public Boolean fromStringToBool(String s)
 	{
 		if(s.equals("true"))
@@ -172,6 +179,7 @@ public class FicheEmprunt
 			.add("dateRappel", this.dateFormat.format(dateRappel))
 		   .add("depasse", this.depasse.toString())
 		   .add("tarif", String.valueOf(this.tarif))
+		   .add("docTarif", String.valueOf(this.docTarif))
 		   	.add("codeClient", this.codeClient)
 		   	.add("codeDoc", this.codeDoc)
 		   .build();
@@ -179,7 +187,7 @@ public class FicheEmprunt
 	}
 
 	// Li les attributs de la fiche
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
 		try{
 			while (parser.hasNext()) 
@@ -221,6 +229,11 @@ public class FicheEmprunt
 			      		parser.next();
 			      		this.tarif = Double.parseDouble(parser.getString());
 			      	}
+			      	else if(parser.getString().equals("docTarif"))
+			      	{
+			      		parser.next();
+			      		this.docTarif = Double.parseDouble(parser.getString());
+			      	}
 			      	else if(parser.getString().equals("codeClient"))
 			      	{
 			      		parser.next();
@@ -231,10 +244,6 @@ public class FicheEmprunt
 			      		parser.next();
 			      		this.codeDoc = parser.getString();
 			      	}
-			      	else
-			      	{
-			      		// error
-			      	}
 			         break;
 			         default:
 			         break;
@@ -244,8 +253,7 @@ public class FicheEmprunt
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
 	}
 };

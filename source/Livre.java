@@ -7,9 +7,10 @@ public class Livre extends Document
 	public static final int DUREE = 6*7;
 	public static final double TARIF = 0.5;
 
-	public Livre(String code, String titre, String auteur, String annee, Localisation loc, Genre genre, int nbPages)
+	public Livre(int[] nbDoc, String titre, String auteur, String annee, Localisation loc, Genre genre, int nbPages)
 	{
-		this.code = code;
+		nbDoc[1] = nbDoc[1]+1;
+		this.code = "L" + Integer.toString(nbDoc[1]);
 		this.titre = titre;
 		this.auteur = auteur;
 		this.annee = annee;
@@ -75,8 +76,9 @@ public class Livre extends Document
 
 	@Override
 	// Lit les attributs du document
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
+
 		try{
 			while (parser.hasNext()) 
 			{
@@ -142,10 +144,6 @@ public class Livre extends Document
 			      		parser.next();
 			      		this.genre = genre.read(parser);
 			      	}
-			      	else
-			      	{
-			      		// error
-			      	}
 			    
 			         break;
 
@@ -157,8 +155,7 @@ public class Livre extends Document
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
 	}
 };

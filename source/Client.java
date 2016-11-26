@@ -21,7 +21,6 @@ public class Client
 	private int nbEmpruntsEffectues;
 	private int nbEmpruntsDepasses;
 	private int nbEmpruntsEnCours; // 3 max
-	private int codeReduction;
 
 	private String matricule;
 
@@ -39,175 +38,163 @@ public class Client
 		{
 			Calendar cal = Calendar.getInstance();
 			this.dateInscription = new Date();
-		this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
-		this.dateRenouvellement = new Date();
-		//calendar.add(Calendar.YEAR, 1);
-		this.dateRenouvellement = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
-	}
-	catch(Exception e)
-	{
-		System.err.println(e.getMessage());
-		System.exit(-1);
-	}
-
-	this.nbEmpruntsEffectues = 0;
-	this.nbEmpruntsDepasses = 0;
-	this.nbEmpruntsEnCours = 0;
-	this.codeReduction = 0;
-
-	this.matricule = "";
-
-}
-
-Client(CategorieClient cat, String nom, String prenom, String adresse, String email, int[] nbClient)
-{
-	this.categorie = cat;
-	this.nom = firstUpperCase(nom);
-	this.prenom = firstUpperCase(prenom);
-	this.adresse = firstUpperCase(adresse);
-	this.email = email;
-
-	try
-	{
-		Calendar cal = Calendar.getInstance();
-		this.dateInscription = new Date();
-		this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
-		this.dateRenouvellement = new Date();
-		this.dateRenouvellement = this.dateInscription;
-	}
-	catch(Exception e)
-	{
-		System.err.println(e.getMessage());
-		System.exit(-1);
-	}
-
-	this.nbEmpruntsEffectues = 0;
-	this.nbEmpruntsDepasses = 0;
-	this.nbEmpruntsEnCours = 0;
-	this.codeReduction = 0;
-
-		// matricule = "deux 1ere lettre de la catégorie" + "nombre de clients actuellement dans cettes catégorie + 1"
-	nbClient[categorie.ordinal()] = nbClient[categorie.ordinal()] + 1;
-	this.matricule = categorie.name().substring(0,2) + Integer.toString(nbClient[categorie.ordinal()]);
-
-	System.out.println("Client (cat ...) - matricule = " + matricule);
-}
-
-	// Génération de clients pour les tests
-Client(String x)
-{
-	this.categorie = CategorieClient.PARTICULIER;
-	this.nom = x;
-	this.prenom = x;
-	this.adresse = x;
-	this.email = x + "@lol.fr";
-
-	try
-	{
-		Calendar cal = Calendar.getInstance();
-		this.dateInscription = new Date();
-		this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
-		this.dateRenouvellement = new Date();
-		this.dateRenouvellement = this.dateInscription;
-	}
-	catch(Exception e)
-	{
-		System.err.println(e.getMessage());
-		System.exit(-1);
-	}
-
-	this.nbEmpruntsEffectues = 0;
-	this.nbEmpruntsDepasses = 0;
-	this.nbEmpruntsEnCours = 0;
-	this.codeReduction = 0;
-
-		// Matricule aléatoire
-
-	int n = (int) (1 + (Math.random() * (10000 - 1)));
-
-	this.matricule = categorie.name().substring(0,2) + Integer.toString(n);
-	//System.out.println("Client (String) - matricule = " + this.matricule);
-}
-
-public CategorieClient getCategorie()
-{
-	return this.categorie;
-}
-
-public String getNom()
-{
-	return this.nom;
-}
-
-public String getPrenom()
-{
-	return this.prenom;
-}
-
-public String getAdresse()
-{
-	return this.adresse;
-}
-
-public String getEmail()
-{
-	return this.email;
-}
-
-public String getNomCategorie()
-{
-	return this.categorie.getNom();
-}
-
-public String getMatricule()
-{
-	return this.matricule;
-}
-
-	// Renvoit les données pour un tableau
-public Object[] getTable()
-{
-	Object[] tab = {this.categorie, this.nom, this.prenom, this.adresse, this.email, dateFormat.format(this.dateInscription), dateFormat.format(this.dateRenouvellement), this.nbEmpruntsEffectues, this.nbEmpruntsEffectues, this.nbEmpruntsEnCours, this.codeReduction};
-
-	return tab;
-}
-
-public String toString()
-{
-	return "Client : " + this.nom.toUpperCase() + " " + this.prenom + "\nAdresse : " + this.adresse + "\nEmail : " + this.email + "\nCategorie : " + this.categorie.getNom() + "\nDate d'inscription : " + dateFormat.format(this.dateInscription);
-}
-
-public String firstUpperCase(String s)
-{
-	StringBuilder str = new StringBuilder();
-	if(!s.isEmpty())
-	{
-		str.append(Character.toUpperCase(s.charAt(0)));
-		for(int i=1; i<s.length(); i++)
+			this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
+			this.dateRenouvellement = new Date();
+			this.dateRenouvellement = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
+		}
+		catch(Exception e)
 		{
-			if(s.charAt(i-1) == ' ' || s.charAt(i-1) == '-' || s.charAt(i-1) == '\'')
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		this.nbEmpruntsEffectues = 0;
+		this.nbEmpruntsDepasses = 0;
+		this.nbEmpruntsEnCours = 0;
+
+		this.matricule = "";
+
+	}
+
+	public Client(CategorieClient cat, String nom, String prenom, String adresse, String email, int[] nbClient)
+	{
+		this.categorie = cat;
+		this.nom = firstUpperCase(nom);
+		this.prenom = firstUpperCase(prenom);
+		this.adresse = firstUpperCase(adresse);
+		this.email = email;
+
+		try
+		{
+			Calendar cal = Calendar.getInstance();
+			this.dateInscription = new Date();
+			this.dateInscription = dateFormat.parse(dateFormat.format(cal.getTime())); // Pour être sûr que les calculs prennent en comptent les jours
+			this.dateRenouvellement = new Date();
+			this.dateRenouvellement = this.dateInscription;
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		this.nbEmpruntsEffectues = 0;
+		this.nbEmpruntsDepasses = 0;
+		this.nbEmpruntsEnCours = 0;
+
+		nbClient[categorie.ordinal()] = nbClient[categorie.ordinal()] + 1;
+		this.matricule = categorie.name().substring(0,2) + Integer.toString(nbClient[categorie.ordinal()]);
+
+	}
+
+	public CategorieClient getCategorie()
+	{
+		return this.categorie;
+	}
+
+	public String getNom()
+	{
+		return this.nom;
+	}
+
+	public String getPrenom()
+	{
+		return this.prenom;
+	}
+
+	public String getAdresse()
+	{
+		return this.adresse;
+	}
+
+	public String getEmail()
+	{
+		return this.email;
+	}
+
+	public String getNomCategorie()
+	{
+		return this.categorie.getNom();
+	}
+
+	public String getMatricule()
+	{
+		return this.matricule;
+	}
+
+	public double getCotisation()
+	{
+		return this.categorie.getCotisation();
+	}
+
+	public int getNbEmpruntsMax()
+	{
+		return this.categorie.getNbEmpruntsMax();
+	}
+
+	public int getNbEmpruntsEnCours()
+	{
+		return this.nbEmpruntsEnCours;
+	}
+
+		// Renvoit les données pour un tableau
+	public Object[] getTable()
+	{
+		Object[] tab = {this.matricule, this.categorie, this.nom, this.prenom, this.adresse, this.email, dateFormat.format(this.dateInscription), dateFormat.format(this.dateRenouvellement), this.nbEmpruntsEffectues, this.nbEmpruntsDepasses, this.nbEmpruntsEnCours};
+
+		return tab;
+	}
+
+	public String toString()
+	{
+		return this.nom.toUpperCase() + " " + this.prenom;
+	}
+
+	// +1 au nombres d'emprunts effectués et en cours
+	public void addEmprunt()
+	{
+		this.nbEmpruntsEffectues ++;
+		this.nbEmpruntsEnCours ++;
+	}
+
+	// -1 au nombre d'emprunt en cours
+	public void rmEmprunt()
+	{
+		this.nbEmpruntsEnCours --;
+	}
+
+	public String firstUpperCase(String s)
+	{
+		StringBuilder str = new StringBuilder();
+		if(!s.isEmpty())
+		{
+			str.append(Character.toUpperCase(s.charAt(0)));
+			for(int i=1; i<s.length(); i++)
 			{
-				str.append(Character.toUpperCase(s.charAt(i)));
-			}
-			else
-			{
-				str.append(Character.toLowerCase(s.charAt(i)));
+				if(s.charAt(i-1) == ' ' || s.charAt(i-1) == '-' || s.charAt(i-1) == '\'')
+				{
+					str.append(Character.toUpperCase(s.charAt(i)));
+				}
+				else
+				{
+					str.append(Character.toLowerCase(s.charAt(i)));
+				}
 			}
 		}
+		return str.toString();
 	}
-	return str.toString();
-}
 
-public void addEmpruntDepasse()
-{
-	this.nbEmpruntsDepasses ++;
-}
+	// Ajout de 1 au nombre d'emprunts dépassés
+	public void addEmpruntDepasse()
+	{
+		this.nbEmpruntsDepasses ++;
+	}
 
-	// Nécessité de se réinscrire
-public Boolean haveToRenew(Date today)
-{
-	Calendar cal = Calendar.getInstance();
-	cal.setTime(this.dateRenouvellement);
+		// Nécessité de se réinscrire
+	public Boolean haveToRenew(Date today)
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(this.dateRenouvellement);
 		cal.add(Calendar.YEAR, 1); // date de renouvellement + 1 an
 		// Si le renouvellement date de plsu d'un an
 		if(today.equals(cal.getTime()) || today.after(cal.getTime()))
@@ -221,18 +208,18 @@ public Boolean haveToRenew(Date today)
 	// Réinscription
 	public void reinscription(Date today)
 	{
-		Calendar cal = Calendar.getInstance();
+		//Calendar cal = Calendar.getInstance();
 		// mise à jour de la date de renouvellement
 		try
 		{
-		this.dateRenouvellement = today; // Pour être sûr que les calculs prennent en comptent les jours
+			this.dateRenouvellement = today; // Pour être sûr que les calculs prennent en comptent les jours
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
 	}
-	catch(Exception e)
-	{
-		System.err.println(e.getMessage());
-		System.exit(-1);
-	}
-}
 
 	// Supression du client
 	public Boolean delete(Date today)
@@ -265,7 +252,6 @@ public Boolean haveToRenew(Date today)
 		.add("nbEmpruntsEffectues", this.nbEmpruntsEffectues)
 		.add("nbEmpruntsDepasses", this.nbEmpruntsDepasses)
 		.add("nbEmpruntsEnCours", this.nbEmpruntsEnCours)
-		.add("codeReduction", this.codeReduction)
 		.add("matricule", this.matricule)
 		.build()
 		;
@@ -275,7 +261,7 @@ public Boolean haveToRenew(Date today)
 	}
 
 	// Lit les attributs du client
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
 		try{
 			while (parser.hasNext()) 
@@ -342,19 +328,10 @@ public Boolean haveToRenew(Date today)
 						parser.next();
 						this.nbEmpruntsEnCours = parser.getInt();
 					}
-					else if(parser.getString().equals("codeReduction"))
-					{
-						parser.next();
-						this.codeReduction = parser.getInt();
-					}
 					else if(parser.getString().equals("matricule"))
 					{
 						parser.next();
 						this.matricule = parser.getString();
-					}
-					else
-					{
-			      		// error
 					}
 					break;
 					default:
@@ -365,8 +342,7 @@ public Boolean haveToRenew(Date today)
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
 	}
 };

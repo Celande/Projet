@@ -6,22 +6,17 @@ import javax.json.stream.*;
 
 public enum CategorieClient
 {
-	ETUDIANT("Etudiant", 5, 10, 5, 5), PARTICULIER("Particulier", 2, 20, 10, 10), ENTREPRISE("Entreprise", 10, 100, 50, 50); // Donner toutes les catégories possibles
+	ETUDIANT("Etudiant", 5, 10), PARTICULIER("Particulier", 2, 20), ENTREPRISE("Entreprise", 10, 100); // Donner toutes les catégories possibles
 
 	private String nom;
 	private int nbEmpruntsMax;
 	private double cotisation;
-	private double coefTarif;
-	private double coefDuree;
-	private Boolean codeReductionActif = false;
 
-	CategorieClient(String nom, int nb, double cot, double tarif, double duree)
+	CategorieClient(String nom, int nb, double cot)
 	{
 		this.nom = nom;
 		this.nbEmpruntsMax = nb;
 		this.cotisation = cot;
-		this.coefTarif = tarif;
-		this.coefDuree = duree;
 	}
 
 	// Renvoie la carégorie en fonction du nom
@@ -40,7 +35,7 @@ public enum CategorieClient
 	}
 
 	// Renvoie la catégorie en fonction de l'id de l'énumération et modifie le codeReductionActif
-	public CategorieClient setCategorie(int ordinal, Boolean codeActif)
+	public CategorieClient setCategorie(int ordinal)
 	{
 
 		CategorieClient cat = PARTICULIER;
@@ -52,14 +47,8 @@ public enum CategorieClient
 				break;
 			}
 		}
-		cat.setCodeActif(codeActif);
 
 		return cat;
-	}
-
-	public void setCodeActif(Boolean actif)
-	{
-		this.codeReductionActif = actif;
 	}
 
 	public String getNom()
@@ -75,16 +64,6 @@ public enum CategorieClient
 	public double getCotisation()
 	{
 		return this.cotisation;
-	}
-
-	public double getCoefTarif()
-	{
-		return this.coefTarif;
-	}
-
-	public double getCoefDuree()
-	{
-		return this.coefDuree;
 	}
 
 	public String toString()
@@ -108,17 +87,15 @@ public enum CategorieClient
 	{
 		JsonObjectBuilder obj = Json.createObjectBuilder()
 			.add("ordinal", this.ordinal())
-		    .add("actif", this.codeReductionActif.toString())
 		   ;
 
 	   return obj;
 	}
 
 	// Renvoie la catégorie après lecture
-	public CategorieClient read(JsonParser parser)
+	public CategorieClient read(JsonParser parser) throws Exception
 	{
 		int ordinal = 0;
-		Boolean actif = false;
 
 		int count = 0; // compteur pour connaitre le nombre de variables lues
 
@@ -145,37 +122,24 @@ public enum CategorieClient
 			      		ordinal = parser.getInt();
 			      		count ++;
 			      	}
-			      	else if(parser.getString().equals("actif"))
-			      	{
-			      		parser.next();
-			      		actif = fromStringToBool(parser.getString());
-			      		count ++;
-			      	}
-			      	else
-			      	{
-			      		// error
-			      	}
 			         break;
 
 			         default:
 			         break;
 			   }
 
-			   if(count >= 2)
+			   if(count >= 1)
 			      		{
 			      			break;
 			      		}
 			}
 
-			return setCategorie(ordinal, actif);
+			return setCategorie(ordinal);
 	
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
-
-		return setCategorie(ordinal, actif);
 	}
 };

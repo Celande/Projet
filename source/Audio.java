@@ -7,9 +7,10 @@ public class Audio extends Document
 	public static final int DUREE = 4*7;
 	public static final double TARIF = 1.0;	
 
-	public Audio(String code, String titre, String auteur, String annee, Localisation loc, Genre genre, String classification)
+	public Audio(int[] nbDoc, String titre, String auteur, String annee, Localisation loc, Genre genre, String classification)
 	{
-		this.code = code;
+		nbDoc[0] = nbDoc[0]+1;
+		this.code = "A" + Integer.toString(nbDoc[0]);
 		this.titre = titre;
 		this.auteur = auteur;
 		this.annee = annee;
@@ -75,8 +76,9 @@ public class Audio extends Document
 
 	@Override
 	// Lit les attributs du document
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
+
 		try{
 			while (parser.hasNext()) 
 			{
@@ -142,10 +144,6 @@ public class Audio extends Document
 			      		parser.next();
 			      		this.classification = parser.getString();
 			      	}
-			      	else
-			      	{
-			      		// error
-			      	}
 			    
 			         break;
 
@@ -157,8 +155,7 @@ public class Audio extends Document
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
 	}
 };

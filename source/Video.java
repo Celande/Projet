@@ -4,13 +4,13 @@ import javax.json.stream.*;
 public class Video extends Document
 {
 	private int dureeFilm; // en min
-	private String mentionsLegales;
 	public static final int DUREE = 2*7;
 	public static final double TARIF = 1.5;	
 
-	public Video(String code, String titre, String auteur, String annee, Localisation loc, Genre genre, int dureeFilm, String mentionsLegales)
+	public Video(int[] nbDoc, String titre, String auteur, String annee, Localisation loc, Genre genre, int dureeFilm)
 	{
-		this.code = code;
+		nbDoc[2] = nbDoc[2]+1;
+		this.code = "V" + Integer.toString(nbDoc[2]);
 		this.titre = titre;
 		this.auteur = auteur;
 		this.annee = annee;
@@ -19,7 +19,6 @@ public class Video extends Document
 		this.genre = genre;
 
 		this.dureeFilm = dureeFilm;
-		this.mentionsLegales = mentionsLegales;
 
 		super.DUREE = this.DUREE;
 		super.TARIF = this.TARIF;
@@ -36,7 +35,6 @@ public class Video extends Document
 		this.genre = Genre.AUTRE; // Par défaut
 
 		this.dureeFilm = 0;
-		this.mentionsLegales = "";
 
 		super.DUREE = this.DUREE;
 		super.TARIF = this.TARIF;
@@ -57,16 +55,11 @@ public class Video extends Document
 		return this.dureeFilm;
 	}
 
-	public String getMentionsLegales()
-	{
-		return this.mentionsLegales;
-	}
-
 	@Override
 	// Renvoit les données pour un tableau
 	public Object[] getTable()
 	{
-		Object[] tab = {this.code, this.titre, this.auteur, this.annee, this.emprunte, this.nbEmprunts, this.genre, this.dureeFilm, this.mentionsLegales};
+		Object[] tab = {this.code, this.titre, this.auteur, this.annee, this.emprunte, this.nbEmprunts, this.genre, this.dureeFilm};
 		return tab;
 	}
 
@@ -83,7 +76,6 @@ public class Video extends Document
 		   .add("emprunte", this.emprunte.toString())
 		   .add("nbEmprunts", this.nbEmprunts)
 		   .add("dureeFilm", this.dureeFilm)
-		   .add("mentionsLegales", this.mentionsLegales)
 		   .add("loc", this.loc.writeBuilder())
 		   .add("genre", this.genre.writeBuilder())
 		   .build()
@@ -94,8 +86,9 @@ public class Video extends Document
 
 	@Override
 	// Lit les attributs du document
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
+
 		try{
 			while (parser.hasNext()) 
 			{
@@ -161,15 +154,6 @@ public class Video extends Document
 			      		parser.next();
 			      		this.dureeFilm = parser.getInt();
 			      	}
-			      	else if(parser.getString().equals("mentionsLegales"))
-			      	{
-			      		parser.next();
-			      		this.mentionsLegales = parser.getString();
-			      	}
-			      	else
-			      	{
-			      		// error
-			      	}
 			    
 			         break;
 
@@ -181,8 +165,7 @@ public class Video extends Document
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
 	}
 };

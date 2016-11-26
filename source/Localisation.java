@@ -34,7 +34,7 @@ public class Localisation
 
 	public String toString()
 	{
-		return "salle : " + this.salle + " rayon : " + this.rayon;
+		return "salle : " + this.salle + " | rayon : " + this.rayon;
 	}
 
 	// Permet d'écrire la localisation en tant qu'objet d'un autre objet
@@ -61,7 +61,7 @@ public class Localisation
 	}
 
 	// Lit les attributs de la localisation
-	public void read(JsonParser parser)
+	public void read(JsonParser parser) throws Exception
 	{
 		try{
 			while (parser.hasNext()) 
@@ -88,10 +88,7 @@ public class Localisation
 			      		parser.next();
 			      		this.rayon = parser.getString();
 			      	}
-			      	else
-			      	{
-			      		// error
-			      	}
+			      	
 			         break;
 
 			         default:
@@ -102,8 +99,7 @@ public class Localisation
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
 	}
 };

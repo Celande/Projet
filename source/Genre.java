@@ -1,6 +1,8 @@
 import javax.json.*;
 import javax.json.stream.*;
 
+//////////// REGLER GENRE DANS CHOOSE/AUDIO/LLIVRE/VIDEO
+
 /* Mise en place du genre d'un document */
 // Nombre limité de genre => Enum
 
@@ -10,16 +12,16 @@ public enum Genre
 	AUTRE("Autre"), FANTASTIQUE("Fantastique"), HORREUR("Frisson & Tereur"), JEUNESSE("Jeunesse"), HISTORIQUE("Historique"), ROMANTIQUE("Romantique"), POLICIER("Policier"), SF("Science-Ficion"), THRILLER("Thriller");
 
 	private String nom;
-	private int nbEmprunts;
+	//private int nbEmprunts;
 
 	Genre(String nom)
 	{
 		this.nom = nom;
-		this.nbEmprunts = 0;
+		//this.nbEmprunts = 0;
 	}
 
 	// Renvoie le genre en fonction de l'id de l'énumération et modifie le nbEmprunts
-	Genre setGenre(int ordinal, int nb)
+	Genre setGenre(int ordinal)
 	{
 		Genre ge = AUTRE;
 		for(Genre g : Genre.values())
@@ -31,15 +33,21 @@ public enum Genre
 			}
 		}
 
-		
-		ge.setnbEmprunts(nb);
-
 		return ge;
 	}
 
-	public void setnbEmprunts(int n)
+	Genre setGenre(String nom)
 	{
-		this.nbEmprunts = n;
+		for(Genre g : Genre.values())
+		{
+			if(nom.equals(g.getNom()) || nom.equals(g.name()))
+			{
+				return setGenre(g.ordinal());
+			}
+		}
+
+		// error
+		return AUTRE;
 	}
 
 	public String getNom()
@@ -57,20 +65,13 @@ public enum Genre
 	{
 		JsonObjectBuilder obj = Json.createObjectBuilder()
 			.add("ordinal", this.ordinal())
-		    //.add("nbEmprunts", this.nbEmprunts)
 		   ;
 
 	   return obj;
 	}
 
-	// Ajout d'emprunts
-	public void addEmprunts(int n)
-	{
-		this.nbEmprunts += n;
-	}
-
 	// Renvoie le genre après lecture
-	public Genre read(JsonParser parser)
+	public Genre read(JsonParser parser) throws Exception
 	{
 		int ordinal = 0;
 		int nb = 0;
@@ -101,19 +102,6 @@ public enum Genre
 
 			      		count ++;
 			      	}
-			      	/*
-			      	else if(parser.getString().equals("nbEmprunts"))
-			      	{
-			      		parser.next();
-			      		nb = parser.getInt();
-
-			      		count ++;
-			      	}
-			      	*/
-			      	else
-			      	{
-			      		// error
-			      	}
 			         break;
 
 			         default:
@@ -126,15 +114,12 @@ public enum Genre
 			   }
 			}
 
-			return setGenre(ordinal, nb);
+			return setGenre(ordinal);
 	
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			System.exit(-1);
+			throw e;
 		}
-
-		return setGenre(ordinal, nb);
 	}
 };

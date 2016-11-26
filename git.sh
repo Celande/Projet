@@ -1,6 +1,6 @@
 # !bash/bin
 
-rm ./build/*.class
+#rm ./build/*.class
 git add *
 git commit
 git pull

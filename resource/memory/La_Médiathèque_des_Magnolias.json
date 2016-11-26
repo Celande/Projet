@@ -1,0 +1,71 @@
+{"nom":"La Médiathèque Des Magnolias","today":"26/11/2016"}
+
+Localisation :
+{"salle":"s1","rayon":"r1"}
+{"salle":"s1","rayon":"r2"}
+{"salle":"s1","rayon":"r3"}
+{"salle":"s2","rayon":"r1"}
+{"salle":"s2","rayon":"r2"}
+{"salle":"s2","rayon":"r3"}
+
+Document :
+Audio :
+{"code":"a1","titre":"a1","auteur":"a1","annee":"2016","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"a1","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"a2","titre":"a2","auteur":"a2","annee":"2016","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"a2","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A3","titre":"Highway to Hell","auteur":"AC-DC","annee":"1979","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Rock","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A4","titre":"Renegades","auteur":"X-Ambassadors","annee":"2015","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Pop Rock","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A5","titre":"Rap God","auteur":"Eminem","annee":"2013","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Rap","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A6","titre":"Allumer le feu ","auteur":"Johnny Halliday","annee":"1998","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Rock","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A7","titre":"Roses","auteur":"The Chainsmokers","annee":"2015","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Electropop/R&B","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A8","titre":"Freedom","auteur":"Pharell Williams","annee":"2015","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Pop","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A9","titre":"I really like you","auteur":"Carly Rae Jepsen","annee":"2015","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Dance Pop, Buble Gum","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A10","titre":"On my mind","auteur":"Ellie Goulding","annee":"2015","empruntable":"false","emprunte":"true","nbEmprunts":1,"classification":"Pop, Electropop","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"A11","titre":"Your type ","auteur":"Carly Rey Jepsen","annee":"2015","empruntable":"true","emprunte":"false","nbEmprunts":0,"classification":"Dance pop, Buble Gum","loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+Livre :
+{"code":"l1","titre":"l1","auteur":"l1","annee":"2016","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":1,"loc":{"salle":"s1","rayon":"r3"},"genre":{"ordinal":0}}
+{"code":"l2","titre":"l2","auteur":"l2","annee":"2016","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":2,"loc":{"salle":"s2","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L3","titre":"Harry Potter, A l'école des sorciers","auteur":"J.K.Rowling","annee":"16/11/1998","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":356,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L4","titre":"Harry Potter, La chambre des secrets","auteur":"J.K.Rowling","annee":"23/03/1999","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":432,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L5","titre":"Harry Potter, Le prisonnier d'Azkaban","auteur":"J.K.Rowling","annee":"19/10/1999","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":568,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L6","titre":"Harry Potter, La coupe de feu","auteur":"J.K.Rowling","annee":"29/11/2000","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":534,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L7","titre":"Harry Potter, L'Ordre du Phoenix","auteur":"J.K.Rowling","annee":"03/12/2003","empruntable":"false","emprunte":"true","nbEmprunts":1,"nbPages":697,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L8","titre":"Harry Potter, Le prince de sang-mêlé","auteur":"J.K.Rowling","annee":"01/10/2005","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":735,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"L9","titre":"Harry Potter, Les reliques de la mort","auteur":"J.K.Rowling","annee":"26/10/2007","empruntable":"true","emprunte":"false","nbEmprunts":0,"nbPages":1035,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+Video :
+{"code":"v1","titre":"v1","auteur":"v1","annee":"2016","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":1,"loc":{"salle":"s2","rayon":"r2"},"genre":{"ordinal":0}}
+{"code":"v2","titre":"v2","auteur":"v2","annee":"2016","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":2,"loc":{"salle":"s2","rayon":"r3"},"genre":{"ordinal":0}}
+{"code":"V3","titre":"Star Wars: Episode 1, La menace fantôme","auteur":"George Lucas","annee":"1999","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":173,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"V4","titre":"Star Wars: Episode 2, L'attaque des clones","auteur":"George Lucas","annee":"2002","empruntable":"false","emprunte":"true","nbEmprunts":1,"dureeFilm":176,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"V5","titre":"Star Wars: Episode 3, La revanche des Sith","auteur":"George Lucas","annee":"2005","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":180,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"V6","titre":"Star Wars: episode 4, Un nouvel espoir (la guerre des étoiles)","auteur":"George Lucas","annee":"1977","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":161,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"V7","titre":"Star Wars: Episode 5, L'empire contre-attaque","auteur":"George Lucas","annee":"1980","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":164,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"V8","titre":"Star Wars: Episode 6, Le retour du Jedi","auteur":"George Lucas","annee":"1983","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":173,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+{"code":"V9","titre":"Star Wars; Episode 7, Le réveil de la force","auteur":"George Lucas","annee":"2015","empruntable":"true","emprunte":"false","nbEmprunts":0,"dureeFilm":176,"loc":{"salle":"s1","rayon":"r1"},"genre":{"ordinal":0}}
+
+Client :
+{"categorie":{"ordinal":1},"nom":"A","prenom":"A","adresse":"A","email":"a@lol.fr","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA1162"}
+{"categorie":{"ordinal":1},"nom":"B","prenom":"B","adresse":"B","email":"b@lol.fr","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA1550"}
+{"categorie":{"ordinal":1},"nom":"Test","prenom":"Test","adresse":"Test","email":"test@lol.fr","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA1339"}
+{"categorie":{"ordinal":1},"nom":"Livier","prenom":"Bertrand","adresse":"9 Rue De La Tour","email":"livier.bertrand@yahoo.fr","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA4"}
+{"categorie":{"ordinal":2},"nom":"Fontana","prenom":"Monique","adresse":"1 Rue Du Paradis","email":"fontana.monique@gmail.com","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"EN1"}
+{"categorie":{"ordinal":0},"nom":"Potter","prenom":"Harry","adresse":"100 Passage Du 9 3/4","email":"edwige@choixpeau.poudlard","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":1,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":1,"matricule":"ET1"}
+{"categorie":{"ordinal":2},"nom":"Escobar","prenom":"Pablo","adresse":"69 Rue De La Cocaine","email":"cartel@sniff.money","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"EN2"}
+{"categorie":{"ordinal":1},"nom":"De La Vega","prenom":"Don Diego","adresse":"1 Rue De La Cape","email":"masque@tornado.mx","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA5"}
+{"categorie":{"ordinal":0},"nom":"Goncalvez","prenom":"Garcia","adresse":"11 Boulevard De La Taverne","email":"tonneau@vin.soif","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"ET2"}
+{"categorie":{"ordinal":0},"nom":"Granger","prenom":"Hermione","adresse":"1 Rue De La Beauté","email":"chambre@griffondor.poudlard","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"ET3"}
+{"categorie":{"ordinal":1},"nom":"Lee","prenom":"Bruce","adresse":"3 Rue De Planche Cassée","email":"yahh@crac.bim","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA6"}
+{"categorie":{"ordinal":1},"nom":"Duriff","prenom":"Sylvain","adresse":"9 Boulevard Du Grand Monarque","email":"christ.cosmique@tufumes.com","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA7"}
+{"categorie":{"ordinal":0},"nom":"Gonzales","prenom":"Speedy","adresse":"37 Rue Du Speed","email":"speed@fire.mx","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"ET4"}
+{"categorie":{"ordinal":2},"nom":"Le Coyote","prenom":"Bipbip","adresse":"Passage Du Grand Canyon","email":"bipbip@lecoyote.am","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"EN3"}
+{"categorie":{"ordinal":1},"nom":"Bakwa","prenom":"Jean-Michel","adresse":"12 Rue Du Poirier","email":"bakwa.jm@","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":1,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":1,"matricule":"PA8"}
+{"categorie":{"ordinal":0},"nom":"Allouette","prenom":"Lamine","adresse":"182 Avenue De La Tortue De Mère","email":"allouette.lamine@free.fr","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"ET5"}
+{"categorie":{"ordinal":1},"nom":"Rouvier","prenom":"Xavier","adresse":"12 Rue Des Favelas","email":"rouvier.xavier@hotmail.fr","dateInscription":"25/11/2016","dateRenouvellement":"25/11/2016","nbEmpruntsEffectues":0,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":0,"matricule":"PA9"}
+{"categorie":{"ordinal":1},"nom":"Des Vallées","prenom":"Hubert","adresse":"3 Rue Des Moulins Sèvres","email":"hubert@orange.fr","dateInscription":"26/11/2016","dateRenouvellement":"26/11/2016","nbEmpruntsEffectues":1,"nbEmpruntsDepasses":0,"nbEmpruntsEnCours":1,"matricule":"PA10"}
+
+Fiche Emprunt :
+{"dateEmprunt":"25/11/2016","dateLimite":"23/12/2016","dateRappel":"22/12/2016","depasse":"false","tarif":"1.0","docTarif":"1.0","codeClient":"PA1550","codeDoc":"a1"}
+{"dateEmprunt":"25/11/2016","dateLimite":"9/12/2016","dateRappel":"8/12/2016","depasse":"false","tarif":"1.5","docTarif":"1.5","codeClient":"PA1162","codeDoc":"v1"}
+{"dateEmprunt":"26/11/2016","dateLimite":"7/1/2017","dateRappel":"6/1/2017","depasse":"false","tarif":"0.5","docTarif":"0.5","codeClient":"PA10","codeDoc":"L7"}
+{"dateEmprunt":"26/11/2016","dateLimite":"24/12/2016","dateRappel":"23/12/2016","depasse":"false","tarif":"1.0","docTarif":"1.0","codeClient":"PA8","codeDoc":"A10"}
+{"dateEmprunt":"26/11/2016","dateLimite":"10/12/2016","dateRappel":"9/12/2016","depasse":"false","tarif":"1.5","docTarif":"1.5","codeClient":"ET1","codeDoc":"V4"}
+
